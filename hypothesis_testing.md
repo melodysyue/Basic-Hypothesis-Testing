@@ -6,15 +6,16 @@ Yue Shi, PhD candidate, University of Washington,
 Import packages and data
 ------------------------
 
-We will look at scaled\_effects in ww\_data file.
+We will look at scaled\_effects in ww\_data file and pac\_data file.
 
 ``` r
 library(ggplot2)
 ww_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_ww_data.txt", header = T, sep = '\t')
-pab_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_pab_data.txt", header = T, sep = '\t') # Load up another DMS (of the yeast protein Pab1) as a comparator
+pab_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_pab_data.txt", header = T, sep = '\t') 
+# Load up another DMS (of the yeast protein Pab1) as a comparator
 ```
 
-Compare Two means
+Compare two means
 -----------------
 
 ##### One-sample T test
@@ -22,7 +23,7 @@ Compare Two means
 Compare sample mean to a value. For example, does sample mean deviate from *α*.
 
 ``` r
-t.test(ww_data$scaled_effect, mu=0) ## By default, R will do two sides t test.
+t.test(ww_data$scaled_effect, mu=0) 
 ```
 
     ## 
@@ -38,7 +39,7 @@ t.test(ww_data$scaled_effect, mu=0) ## By default, R will do two sides t test.
     ## 0.8305947
 
 ``` r
-t.test(ww_data$scaled_effect, mu = 0, alternative = "two.sided")
+t.test(ww_data$scaled_effect, mu = 0, alternative = "two.sided") ## By default, R will do two-side t test.
 ```
 
     ## 
@@ -96,16 +97,12 @@ ggplot(ww_data, aes(scaled_effect))+
   geom_histogram(fill="blue",alpha=0.25)
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 ``` r
 ggplot(pab_data, aes(scaled_effect))+
   geom_histogram(fill="red",alpha=0.25)
 ```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
@@ -149,10 +146,6 @@ ks.test(ww_data$scaled_effect, "pnorm", mean(ww_data$scaled_effect), sd(ww_data$
 ``` r
 ks.test(pab_data$scaled_effect, "pnorm", mean(pab_data$scaled_effect), sd(pab_data$scaled_effect))
 ```
-
-    ## Warning in ks.test(pab_data$scaled_effect, "pnorm", mean(pab_data
-    ## $scaled_effect), : ties should not be present for the Kolmogorov-Smirnov
-    ## test
 
     ## 
     ##  One-sample Kolmogorov-Smirnov test
