@@ -7,5 +7,5 @@
 * compare means: paired t test vs its non-parametric equivalents (Sign test and Wilcoxon sign rank test)
 * compare means: unpaired t test vs its non-parametric equivalent (Wilcoxon rank sum test)
 * compare multiple means: anova vs. Kruskal-Wallis test
-* compare proportions between two groups;  
-* basic R functions to conduct hypothesis testing; 
+* compare proportions between two groups
+* basic R functions to conduct hypothesis testing
