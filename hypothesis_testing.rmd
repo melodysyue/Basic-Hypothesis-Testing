@@ -215,3 +215,4 @@ pcal(0.3)
 pcal(0.2)
 ```
 
+Conclusion, the power of Kruskal-Wallis test is about 30%, which means it cannot tell the difference within 30%, which is pretty bad...

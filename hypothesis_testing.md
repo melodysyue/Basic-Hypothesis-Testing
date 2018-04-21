@@ -214,20 +214,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 53, p-value = 0.6173
+    ## s = 39, p-value = 0.0352
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.785786 2.214402
+    ##  1.707962 1.990814
     ## sample estimates:
     ## median of x 
-    ##    2.010633 
+    ##    1.842668 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.7889 2.1849
-    ## Interpolated CI       0.9500 1.7858 2.2144
-    ## Upper Achieved CI     0.9648 1.7790 2.2778
+    ## Lower Achieved CI     0.9431 1.7146 1.9867
+    ## Interpolated CI       0.9500 1.7080 1.9908
+    ## Upper Achieved CI     0.9648 1.6937 1.9997
 
 What about using one-sample t-test on this?
 
@@ -239,13 +239,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = -0.22644, df = 99, p-value = 0.8213
+    ## t = -0.95673, df = 99, p-value = 0.341
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.799321 2.159567
+    ##  1.720167 2.097766
     ## sample estimates:
     ## mean of x 
-    ##  1.979444
+    ##  1.908966
 
 ##### Wilconxon Signed-Rank Test
 
@@ -259,7 +259,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2557, p-value = 0.9138
+    ## V = 2120, p-value = 0.1643
     ## alternative hypothesis: true location is not equal to 2
 
 ##### Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -274,13 +274,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -5.1763, df = 99, p-value = 1.188e-06
+    ## t = -4.5717, df = 99, p-value = 1.401e-05
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8165400 -0.3640072
+    ##  -0.8396267 -0.3313794
     ## sample estimates:
     ##  mean of x 
-    ## -0.5902736
+    ## -0.5855031
 
 ``` r
 SIGN.test(dif,md=0)
@@ -290,20 +290,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 38, p-value = 0.02098
+    ## s = 30, p-value = 7.85e-05
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8480245 -0.1072907
+    ##  -0.7769437 -0.2770458
     ## sample estimates:
     ## median of x 
-    ##  -0.5574081 
+    ##  -0.5859978 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
-    ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -0.8449 -0.1114
-    ## Interpolated CI       0.9500 -0.8480 -0.1073
-    ## Upper Achieved CI     0.9648 -0.8547 -0.0986
+    ##                   Conf.Level  L.E.pt U.E.pt
+    ## Lower Achieved CI     0.9431 -0.7708 -0.278
+    ## Interpolated CI       0.9500 -0.7769 -0.277
+    ## Upper Achieved CI     0.9648 -0.7901 -0.275
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -331,7 +331,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 4889, p-value = 0.7872
+    ## W = 5048, p-value = 0.9076
     ## alternative hypothesis: true location shift is not equal to 0
 
 ##### Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the mean and median.
@@ -363,7 +363,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 546160, p-value = 0.0003511
+    ## W = 528250, p-value = 0.02869
     ## alternative hypothesis: true location shift is not equal to 0
 
 ##### Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores
@@ -424,7 +424,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 1.5781, df = 2, p-value = 0.4543
+    ## Kruskal-Wallis chi-squared = 0.61093, df = 2, p-value = 0.7368
 
 ##### OK, now double the shape parameter for d3 and test again
 
@@ -437,7 +437,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 66.666, df = 2, p-value = 3.339e-15
+    ## Kruskal-Wallis chi-squared = 75.568, df = 2, p-value < 2.2e-16
 
 ##### Use pairwise.wilcox.test() to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -458,8 +458,8 @@ pairwise.wilcox.test(df$value,df$group, paired = TRUE)
     ## data:  df$value and df$group 
     ## 
     ##   1       2      
-    ## 2 0.67    -      
-    ## 3 2.9e-10 2.9e-10
+    ## 2 0.77    -      
+    ## 3 7.1e-11 2.8e-10
     ## 
     ## P value adjustment method: holm
 
@@ -476,7 +476,7 @@ kruskal.test(list(d1,d2,d4))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d4)
-    ## Kruskal-Wallis chi-squared = 3.6503, df = 2, p-value = 0.1612
+    ## Kruskal-Wallis chi-squared = 4.3483, df = 2, p-value = 0.1137
 
 Since it is randomization, the p value changes a lot. Sometimes it is greater than 5%, sometimes it is less than 5%. Let's repeat it for 1000 times, and see the result.
 
@@ -504,22 +504,24 @@ pcal(1)
 pcal(0.5)
 ```
 
-    ## [1] 0.998
+    ## [1] 0.999
 
 ``` r
 pcal(0.4)
 ```
 
-    ## [1] 0.982
+    ## [1] 0.983
 
 ``` r
 pcal(0.3)
 ```
 
-    ## [1] 0.887
+    ## [1] 0.892
 
 ``` r
 pcal(0.2)
 ```
 
-    ## [1] 0.552
+    ## [1] 0.532
+
+Conclusion, the power of Kruskal-Wallis test is about 30%, which means it cannot tell the difference within 30%, which is pretty bad...
