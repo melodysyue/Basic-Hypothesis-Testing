@@ -1,0 +1,219 @@
+---
+title: "Basic Hypothesis Testing"
+author: "Yue Shi, PhD candidate, University of Washington,"
+date: "4/12/2018"
+output: rmarkdown::github_document
+---
+
+## Import packages and data
+
+We will look at scaled_effects in ww_data file and pac_data file.
+```{r}
+library(ggplot2)
+ww_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_ww_data.txt", header = T, sep = '\t')
+pab_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_pab_data.txt", header = T, sep = '\t') 
+# Load up another DMS (of the yeast protein Pab1) as a comparator
+```
+
+## Compare two means
+
+##### One-sample T test
+Compare sample mean to a value. For example, does sample mean deviate from $\alpha$. 
+
+```{r}
+t.test(ww_data$scaled_effect, mu=0) 
+t.test(ww_data$scaled_effect, mu = 0, alternative = "two.sided") ## By default, R will do two-side t test.
+t.test(ww_data$scaled_effect, mu = 0, alternative = "less")
+t.test(ww_data$scaled_effect, mu = 0, alternative = "greater")
+```
+
+##### Two-sample T test
+
+##### First, check the assumption of normality. But remember, t test is robust to non-normality.  
+Make a histogram to check the data distribution. 
+```{r message=FALSE}
+ggplot(ww_data, aes(scaled_effect))+
+  geom_histogram(fill="blue",alpha=0.25)
+
+ggplot(pab_data, aes(scaled_effect))+
+  geom_histogram(fill="red",alpha=0.25)
+```
+
+Make a QQ plot. A Q-Q plot is a graphical method for comparing two probability distributions by plotting their quantiles against each other. If the distributions are identical, the points will lie on a line with a slope of 1If they have the same shape but are related by a linear transformation, the Q-Q plot will be linear but with a slope other than 1. Q-Q plots allow you to spot outliers. QQ plot has the following format qqplot(distribution1, distribution2)
+
+```{r message=FALSE}
+qqplot(dnorm(seq(min(ww_data$scaled_effect), max(ww_data$scaled_effect), 0.01),
+             mean(ww_data$scaled_effect), sd(ww_data$scaled_effect)), ww_data$scaled_effect)
+
+qqplot(dnorm(seq(min(pab_data$scaled_effect), max(pab_data$scaled_effect), 0.01),
+            mean(pab_data$scaled_effect), sd(pab_data$scaled_effect)), pab_data$scaled_effect)
+```
+
+Compare probability distributions between ww_data and pab_data. 
+```{r}
+qqplot(ww_data$scaled_effect, pab_data$scaled_effect)
+```
+
+The Kolmogorov-Smirnov test is a nonparametric test that can be used to compare a sample distribution ot a reference distribution or to compare two sample distributions. 
+Try to use the Kolmogorov-Smirnov test (ks.test()) to check for normality.  As we'll learn, the KS test compares a set of data to a cumulative distribution function.  Here, you will want to use "pnorm" (the normal cumulative distribution function).
+```{r warning=FALSE}
+ks.test(ww_data$scaled_effect, "pnorm", mean(ww_data$scaled_effect), sd(ww_data$scaled_effect))
+ks.test(pab_data$scaled_effect, "pnorm", mean(pab_data$scaled_effect), sd(pab_data$scaled_effect))
+```
+
+##### Second, check the assumption for homogeneity of variance.
+
+Bartlett's test can be used to determine if samples are drawn from populations with the same variance. Try to use Bartlett's test (bartlett.test()) test to see if the variances can be pooled.  
+```{r}
+bartlett.test(list(ww_data$scaled_effect, pab_data$scaled_effect))
+```
+
+##### Third, do a two-sample 2-sides t test
+
+```{r}
+t.test(ww_data$scaled_effect, pab_data$scaled_effect, paired=FALSE,var.equal=TRUE)
+ggplot(ww_data, aes(scaled_effect)) + geom_density(fill = "blue", alpha = 0.25) + geom_density(data = pab_data, aes(scaled_effect), fill = "red", alpha = 0.25)
+```
+
+## Non-parametric hypothesis testing
+
+```{r}
+library(BSDA)
+x=rnorm(100,2) #Generate some data
+```
+
+##### Sign Test
+Background:  For example, when the data is not normally distributed, rather than apply a transformation, you can use sign test. It simply allocates a sign (+ or -) to each observation. It tests the equality of matched pairs of observations. The null hypotheis is that the median of the differences is zero. No further assumptions are made. It is used in situations in which the one-sample or paired t-test might traditionally be applied. As a rule, nonparametric methods, particularly when used in small samples, have rather less power than their parametric equivalents. 
+
+Let's test to see if this data really does come from a distribution with a median of 2
+```{r}
+SIGN.test(x, md = 2) # it use median (md) instead of mean (mu). 
+```
+
+What about use one-sample t-test on this? 
+```{r}
+t.test(x,mu=2)
+```
+
+##### Wilconxon signed-Rank Test 
+Background: Though the sign test is extremely simple to perform, one obvious disadvantage is that it does not take the maginitude of the observation into account and may reduce the statistical power of the test. The alternative that accounts for the magnitude of the observations is the Wilcoxon signed rank test. It tests the equality of matched pairs of observations. It assumes the distribution is symmetrical. The null hypothesis is that both distributions are the same. 
+```{r}
+wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
+```
+
+##### Now, you try with paired data.  First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
+
+```{r}
+y=rnorm(100,2.5)
+dif=x-y
+t.test(dif,mu=0)
+SIGN.test(dif,md=0)
+wilcox.test(dif,mu=0)
+```
+
+Conclusion: Wilcoxon signed-rank test is more powerful than the simply sign test. Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value. 
+ 
+
+##### Wilcoxon Rank Sum Test (a.k.a Mann-Whitney test or Wilcoxon-Mann-Whitney test)
+Background: the sign test and Wilcoxon signed rank test are usefl non-parametric alternatives to the one-sample and paired t-tests. A nonparametric alternative to the unpaired t-test is given by the Wilcoxon rank sum test, which is also known as the Mann-Whitney test. When used in one-sample or paired test, wilcox.test means Wilcoxon signed rank test, whereas when used in unpaired two-sample test, wilcox.test means Wilcoxon rank sum test. 
+
+```{r}
+z=rnorm(100,2)
+wilcox.test(x,z) 
+```
+
+####  Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2).  Make density plot of each, marking the mean and median.
+```{r message=FALSE}
+normd=rnorm(1000, mean=2)
+mean_norm=mean(normd)
+gammad=rgamma(1000, shape=2)
+median_gamma=median(gammad)
+normd=as.data.frame(normd)
+gammad=as.data.frame(gammad)
+median_gamma
+
+library(ggplot2)
+ggplot(normd, aes(normd)) + 
+  geom_density(fill = "blue", alpha = 0.25) + 
+  geom_vline(xintercept=mean_norm, col="blue")+
+  geom_density(data = gammad, aes(gammad), fill = "red", alpha = 0.25) +
+  geom_vline(xintercept=median_gamma, col="red")
+```
+
+##### What do you think will happen when you do a Wilcoxon rank sum test with these data?  Give it a try and see. Remember, wilcoxon test assumes symmetric disetribution, whereas gamma distribution is not necessarily symmetrical. 
+```{r}
+wilcox.test(normd$normd,gammad$gammad)
+```
+
+##### Next, do a WRST on the WW domain reported_effect scores vs the Pab1 reported_effect scores
+```{r}
+ww_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_ww_data.txt", header = T, sep = '\t')
+pab_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_pab_data.txt", header = T, sep = '\t')
+wilcox.test(ww_data$reported_effect,pab_data$reported_effect)
+t.test(ww_data$reported_effect,pab_data$reported_effect)
+ggplot(ww_data, aes(reported_effect)) + 
+  geom_density(fill = "blue", alpha = 0.25) + 
+  geom_density(data = pab_data, aes(reported_effect), fill = "red", alpha = 0.25)
+```
+
+Since both datasets on reported effect are not normally distributed, use a non-parametrid test such as wilcoxon rank sum test is a good idea. 
+
+##### Kruskal-Wallis Test
+Background: Wilcoxon rank sum test is for comparing two independent groups, kruskal-wallis test is an non-parametric alternative of anova for comparing three independent groups. 
+
+Create three random gamma-distributed data set with 100 elements and an identical shape parameter of your choice. Use kruskal.test() to verify that the medians are the same 
+```{r}
+d1=rgamma(100,shape=2)
+d2=rgamma(100,shape=2)
+d3=rgamma(100,shape=2)
+kruskal.test(list(d1,d2,d3))
+```
+
+#### OK, now double the shape parameter for d3 and test again
+```{r}
+d3=rgamma(100,shape=4)
+kruskal.test(list(d1,d2,d3))
+```
+
+#### Use pairwise.wilcox.test() to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
+```{r}
+d1=cbind(d1,rep(1,100))
+d2=cbind(d2,rep(2,100))
+d3=cbind(d3,rep(3,100))
+df=rbind(d1,d2,d3)
+colnames(df)=c("value","group")
+df=as.data.frame(df)
+df$group=as.factor(df$group)
+str(df)
+pairwise.wilcox.test(df$value,df$group, paired = TRUE)
+```
+
+#### To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detecting the difference
+```{r}
+d1=rgamma(100,shape=2)
+d2=rgamma(100,shape=2)
+d4=rgamma(100,shape=2.3)
+kruskal.test(list(d1,d2,d4))
+```
+Since it is randomization, the p value changes a lot. Sometimes it is greater than 5%, sometimes it is less than 5%. Repeat it for 1000 times, and see the result. 
+```{r}
+pcal=function(percent){
+pvalues=vector()
+for (i in 1:1000){
+  d1=rgamma(100,shape=2)
+  d2=rgamma(100,shape=2)
+  d4=rgamma(100,shape=2+2*percent)
+  test=kruskal.test(list(d1,d2,d4))
+  pvalues=c(pvalues,test$p.value)
+}
+p=sum(pvalues<0.05)/1000
+return(p)
+}
+
+pcal(1)
+pcal(0.5)
+pcal(0.4)
+pcal(0.3)
+pcal(0.2)
+```
+
