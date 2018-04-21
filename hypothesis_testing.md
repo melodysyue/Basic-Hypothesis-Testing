@@ -1,24 +1,24 @@
 Basic Hypothesis Testing
 ================
 Yue Shi, PhD candidate, University of Washington,
-4/12/2018
+4/21/2018
 
-Import packages and data
-------------------------
+Import packages and data sets
+-----------------------------
 
-We will look at scaled\_effects in ww\_data file and pac\_data file.
+We will import ww\_data file and pac\_data file as a comparator, and two libraries, ggplot2 (for plotting) and BSDA (basic statistics and data analysis).
 
 ``` r
 library(ggplot2)
+library(BSDA)
 ww_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_ww_data.txt", header = T, sep = '\t')
 pab_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_pab_data.txt", header = T, sep = '\t') 
-# Load up another DMS (of the yeast protein Pab1) as a comparator
 ```
 
-Compare two means
------------------
+Parametric testing: Compare two means
+-------------------------------------
 
-##### One-sample T test
+#### One-sample T test
 
 Compare sample mean to a value. For example, does sample mean deviate from *α*.
 
@@ -86,11 +86,11 @@ t.test(ww_data$scaled_effect, mu = 0, alternative = "greater")
     ## mean of x 
     ## 0.8305947
 
-##### Two-sample T test
+#### Two-sample T test
 
 ##### First, check the assumption of normality. But remember, t test is robust to non-normality.
 
-Make a histogram to check the data distribution.
+**Make a histogram** to check the data distribution.
 
 ``` r
 ggplot(ww_data, aes(scaled_effect))+
@@ -106,7 +106,7 @@ ggplot(pab_data, aes(scaled_effect))+
 
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
-Make a QQ plot. A Q-Q plot is a graphical method for comparing two probability distributions by plotting their quantiles against each other. If the distributions are identical, the points will lie on a line with a slope of 1If they have the same shape but are related by a linear transformation, the Q-Q plot will be linear but with a slope other than 1. Q-Q plots allow you to spot outliers. QQ plot has the following format qqplot(distribution1, distribution2)
+**Make a QQ plot**. A Q-Q plot is a graphical method for comparing two probability distributions by plotting their quantiles against each other. If the distributions are identical, the points will lie on a line with a slope of 1If they have the same shape but are related by a linear transformation, the Q-Q plot will be linear but with a slope other than 1. Q-Q plots allow you to spot outliers. QQ plot has the following format qqplot(distribution1, distribution2)
 
 ``` r
 qqplot(dnorm(seq(min(ww_data$scaled_effect), max(ww_data$scaled_effect), 0.01),
@@ -130,7 +130,7 @@ qqplot(ww_data$scaled_effect, pab_data$scaled_effect)
 
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
-The Kolmogorov-Smirnov test is a nonparametric test that can be used to compare a sample distribution ot a reference distribution or to compare two sample distributions. Try to use the Kolmogorov-Smirnov test (ks.test()) to check for normality. As we'll learn, the KS test compares a set of data to a cumulative distribution function. Here, you will want to use "pnorm" (the normal cumulative distribution function).
+**The Kolmogorov-Smirnov test** is a nonparametric test that can be used to compare a sample distribution ot a reference distribution or to compare two sample distributions. Try to use the Kolmogorov-Smirnov test (ks.test()) to check for normality. As we'll learn, the KS test compares a set of data to a cumulative distribution function. Here, you will want to use "pnorm" (the normal cumulative distribution function).
 
 ``` r
 ks.test(ww_data$scaled_effect, "pnorm", mean(ww_data$scaled_effect), sd(ww_data$scaled_effect))
@@ -156,7 +156,7 @@ ks.test(pab_data$scaled_effect, "pnorm", mean(pab_data$scaled_effect), sd(pab_da
 
 ##### Second, check the assumption for homogeneity of variance.
 
-Bartlett's test can be used to determine if samples are drawn from populations with the same variance. Try to use Bartlett's test (bartlett.test()) test to see if the variances can be pooled.
+**Bartlett's test** can be used to determine if samples are drawn from populations with the same variance. Try to use Bartlett's test (bartlett.test()) test to see if the variances can be pooled.
 
 ``` r
 bartlett.test(list(ww_data$scaled_effect, pab_data$scaled_effect))
@@ -168,7 +168,7 @@ bartlett.test(list(ww_data$scaled_effect, pab_data$scaled_effect))
     ## data:  list(ww_data$scaled_effect, pab_data$scaled_effect)
     ## Bartlett's K-squared = 1.9762, df = 1, p-value = 0.1598
 
-##### Third, do a two-sample 2-sides t test
+##### Third, do a two-sample 2-sides t test.
 
 ``` r
 t.test(ww_data$scaled_effect, pab_data$scaled_effect, paired=FALSE,var.equal=TRUE)
@@ -196,13 +196,12 @@ Non-parametric hypothesis testing
 ---------------------------------
 
 ``` r
-library(BSDA)
 x=rnorm(100,2) #Generate some data
 ```
 
-##### Sign Test
+#### Sign Test
 
-Background: For example, when the data is not normally distributed, rather than apply a transformation, you can use sign test. It simply allocates a sign (+ or -) to each observation. It tests the equality of matched pairs of observations. The null hypotheis is that the median of the differences is zero. No further assumptions are made. It is used in situations in which the one-sample or paired t-test might traditionally be applied. As a rule, nonparametric methods, particularly when used in small samples, have rather less power than their parametric equivalents.
+Background: For example, when the data is not normally distributed, rather than apply a transformation, you can use sign test. It simply allocates a sign (+ or -) to each observation. It tests the equality of matched pairs of observations. The null hypotheis is that the median of the differences is zero. No further assumptions are made. **It is used in situations in which the one-sample or paired t-test might traditionally be applied**. As a rule, nonparametric methods, particularly when used in small samples, have rather less power than their parametric equivalents.
 
 Let's test to see if this data really does come from a distribution with a median of 2
 
@@ -214,20 +213,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 39, p-value = 0.0352
+    ## s = 51, p-value = 0.9204
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.707962 1.990814
+    ##  1.860822 2.351369
     ## sample estimates:
     ## median of x 
-    ##    1.842668 
+    ##    2.127277 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.7146 1.9867
-    ## Interpolated CI       0.9500 1.7080 1.9908
-    ## Upper Achieved CI     0.9648 1.6937 1.9997
+    ## Lower Achieved CI     0.9431 1.8613 2.3462
+    ## Interpolated CI       0.9500 1.8608 2.3514
+    ## Upper Achieved CI     0.9648 1.8599 2.3625
 
 What about using one-sample t-test on this?
 
@@ -239,15 +238,15 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = -0.95673, df = 99, p-value = 0.341
+    ## t = -0.22406, df = 99, p-value = 0.8232
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.720167 2.097766
+    ##  1.756828 2.193825
     ## sample estimates:
     ## mean of x 
-    ##  1.908966
+    ##  1.975327
 
-##### Wilconxon Signed-Rank Test
+#### Wilconxon Signed-Rank Test
 
 Background: Though the sign test is extremely simple to perform, one obvious disadvantage is that it does not take the maginitude of the observation into account and may reduce the statistical power of the test. The alternative that accounts for the magnitude of the observations is the Wilcoxon signed rank test. It tests the equality of matched pairs of observations. It assumes the distribution is symmetrical. The null hypothesis is that both distributions are the same.
 
@@ -259,10 +258,10 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2120, p-value = 0.1643
+    ## V = 2553, p-value = 0.9247
     ## alternative hypothesis: true location is not equal to 2
 
-##### Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
+Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
 
 ``` r
 y=rnorm(100,2.5)
@@ -274,13 +273,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -4.5717, df = 99, p-value = 1.401e-05
+    ## t = -3.632, df = 99, p-value = 0.0004477
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8396267 -0.3313794
+    ##  -0.8583433 -0.2518375
     ## sample estimates:
     ##  mean of x 
-    ## -0.5855031
+    ## -0.5550904
 
 ``` r
 SIGN.test(dif,md=0)
@@ -290,20 +289,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 30, p-value = 7.85e-05
+    ## s = 35, p-value = 0.003518
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.7769437 -0.2770458
+    ##  -1.1047907 -0.1620524
     ## sample estimates:
     ## median of x 
-    ##  -0.5859978 
+    ##  -0.5832376 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
-    ##                   Conf.Level  L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 -0.7708 -0.278
-    ## Interpolated CI       0.9500 -0.7769 -0.277
-    ## Upper Achieved CI     0.9648 -0.7901 -0.275
+    ##                   Conf.Level  L.E.pt  U.E.pt
+    ## Lower Achieved CI     0.9431 -1.0970 -0.1798
+    ## Interpolated CI       0.9500 -1.1048 -0.1621
+    ## Upper Achieved CI     0.9648 -1.1216 -0.1239
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -313,14 +312,14 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1254, p-value = 1.252e-05
+    ## V = 1505, p-value = 0.000456
     ## alternative hypothesis: true location is not equal to 0
 
-Conclusion: Wilcoxon signed-rank test is more powerful than the simply sign test. Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
+**Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
 
-##### Wilcoxon Rank Sum Test (a.k.a Mann-Whitney test or Wilcoxon-Mann-Whitney test)
+#### Wilcoxon Rank Sum Test (a.k.a Mann-Whitney test or Wilcoxon-Mann-Whitney test)
 
-Background: the sign test and Wilcoxon signed rank test are usefl non-parametric alternatives to the one-sample and paired t-tests. A nonparametric alternative to the unpaired t-test is given by the Wilcoxon rank sum test, which is also known as the Mann-Whitney test. When used in one-sample or paired test, wilcox.test means Wilcoxon signed rank test, whereas when used in unpaired two-sample test, wilcox.test means Wilcoxon rank sum test.
+Background: the sign test and Wilcoxon signed rank test are useful non-parametric alternatives to the one-sample and paired t-tests. **A nonparametric alternative to the unpaired t-test is given by the Wilcoxon rank sum test, which is also known as the Mann-Whitney test.** When used in one-sample or paired test, wilcox.test means Wilcoxon signed rank test, whereas when used in unpaired two-sample test, *wilcox.test* means Wilcoxon rank sum test.
 
 ``` r
 z=rnorm(100,2)
@@ -331,10 +330,10 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 5048, p-value = 0.9076
+    ## W = 5305, p-value = 0.4569
     ## alternative hypothesis: true location shift is not equal to 0
 
-##### Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the mean and median.
+Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the mean and median.
 
 ``` r
 normd=rnorm(1000, mean=2)
@@ -353,7 +352,7 @@ ggplot(normd, aes(normd)) +
 
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-15-1.png)
 
-##### What do you think will happen when you do a Wilcoxon rank sum test with these data? Give it a try and see. Remember, wilcoxon test assumes symmetric disetribution, whereas gamma distribution is not necessarily symmetrical.
+What do you think will happen when you do a Wilcoxon rank sum test with these data? Give it a try and see. Remember, wilcoxon test assumes symmetric disetribution, whereas gamma distribution is not necessarily symmetrical.
 
 ``` r
 wilcox.test(normd$normd,gammad$gammad)
@@ -363,14 +362,12 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 528250, p-value = 0.02869
+    ## W = 541470, p-value = 0.00132
     ## alternative hypothesis: true location shift is not equal to 0
 
-##### Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores
+Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
 
 ``` r
-ww_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_ww_data.txt", header = T, sep = '\t')
-pab_data = read.table(file="http://faculty.washington.edu/dfowler/teaching/2017/GNOM560/560_pab_data.txt", header = T, sep = '\t')
 wilcox.test(ww_data$reported_effect,pab_data$reported_effect)
 ```
 
@@ -407,9 +404,9 @@ ggplot(ww_data, aes(reported_effect)) +
 
 Since both datasets on reported effect are not normally distributed, use a non-parametrid test such as wilcoxon rank sum test is a good idea.
 
-##### Kruskal-Wallis Test
+#### Kruskal-Wallis Test
 
-Background: Wilcoxon rank sum test is for comparing two independent groups, kruskal-wallis test is an non-parametric alternative of anova for comparing three independent groups.
+Background: Wilcoxon rank sum test is for comparing two independent groups, **kruskal-wallis test is an non-parametric alternative of anova for comparing three independent groups.**
 
 Create three random gamma-distributed data set with 100 elements and an identical shape parameter of your choice. Use kruskal.test() to verify that the medians are the same
 
@@ -424,9 +421,9 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 0.61093, df = 2, p-value = 0.7368
+    ## Kruskal-Wallis chi-squared = 2.189, df = 2, p-value = 0.3347
 
-##### OK, now double the shape parameter for d3 and test again
+OK, now double the shape parameter for d3 and test again
 
 ``` r
 d3=rgamma(100,shape=4)
@@ -437,9 +434,9 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 75.568, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 73.238, df = 2, p-value < 2.2e-16
 
-##### Use pairwise.wilcox.test() to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
+Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
 ``` r
 d1=cbind(d1,rep(1,100))
@@ -458,12 +455,12 @@ pairwise.wilcox.test(df$value,df$group, paired = TRUE)
     ## data:  df$value and df$group 
     ## 
     ##   1       2      
-    ## 2 0.77    -      
-    ## 3 7.1e-11 2.8e-10
+    ## 2 0.08    -      
+    ## 3 1.4e-11 3.3e-08
     ## 
     ## P value adjustment method: holm
 
-##### To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detecting the difference
+To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detecting the difference
 
 ``` r
 d1=rgamma(100,shape=2)
@@ -476,7 +473,7 @@ kruskal.test(list(d1,d2,d4))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d4)
-    ## Kruskal-Wallis chi-squared = 4.3483, df = 2, p-value = 0.1137
+    ## Kruskal-Wallis chi-squared = 1.4308, df = 2, p-value = 0.489
 
 Since it is randomization, the p value changes a lot. Sometimes it is greater than 5%, sometimes it is less than 5%. Let's repeat it for 1000 times, and see the result.
 
@@ -491,37 +488,47 @@ for (i in 1:1000){
   test=kruskal.test(list(d1,d2,d4))
   pvalues=c(pvalues,test$p.value)
 }
-p=sum(pvalues<0.05)/1000
-return(p)
+p=sum(pvalues<0.05)/1000*100
+print(paste("When the difference is within", percent*100, "%, "))
+print(paste("Out of 1000 tests, ", p,"% have significant p values."))
 }
+```
 
+Try some percentage of differnence, and hopefully find the detection power.
+
+``` r
 pcal(1)
 ```
 
-    ## [1] 1
+    ## [1] "When the difference is within 100 %, "
+    ## [1] "Out of 1000 tests,  100 % have significant p values."
 
 ``` r
 pcal(0.5)
 ```
 
-    ## [1] 0.999
+    ## [1] "When the difference is within 50 %, "
+    ## [1] "Out of 1000 tests,  100 % have significant p values."
 
 ``` r
 pcal(0.4)
 ```
 
-    ## [1] 0.983
+    ## [1] "When the difference is within 40 %, "
+    ## [1] "Out of 1000 tests,  98 % have significant p values."
 
 ``` r
 pcal(0.3)
 ```
 
-    ## [1] 0.892
+    ## [1] "When the difference is within 30 %, "
+    ## [1] "Out of 1000 tests,  87.4 % have significant p values."
 
 ``` r
 pcal(0.2)
 ```
 
-    ## [1] 0.532
+    ## [1] "When the difference is within 20 %, "
+    ## [1] "Out of 1000 tests,  57.3 % have significant p values."
 
 Conclusion, the power of Kruskal-Wallis test is about 30%, which means it cannot tell the difference within 30%, which is pretty bad...
