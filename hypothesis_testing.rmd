@@ -77,7 +77,7 @@ ggplot(ww_data, aes(scaled_effect)) + geom_density(fill = "blue", alpha = 0.25) 
 
 ## Non-parametric hypothesis testing
 
-```{r}
+```{r message=FALSE}
 library(BSDA)
 x=rnorm(100,2) #Generate some data
 ```
@@ -90,12 +90,12 @@ Let's test to see if this data really does come from a distribution with a media
 SIGN.test(x, md = 2) # it use median (md) instead of mean (mu). 
 ```
 
-What about use one-sample t-test on this? 
+What about using one-sample t-test on this? 
 ```{r}
 t.test(x,mu=2)
 ```
 
-##### Wilconxon signed-Rank Test 
+##### Wilconxon Signed-Rank Test 
 Background: Though the sign test is extremely simple to perform, one obvious disadvantage is that it does not take the maginitude of the observation into account and may reduce the statistical power of the test. The alternative that accounts for the magnitude of the observations is the Wilcoxon signed rank test. It tests the equality of matched pairs of observations. It assumes the distribution is symmetrical. The null hypothesis is that both distributions are the same. 
 ```{r}
 wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
@@ -122,7 +122,7 @@ z=rnorm(100,2)
 wilcox.test(x,z) 
 ```
 
-####  Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2).  Make density plot of each, marking the mean and median.
+#####  Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2).  Make density plot of each, marking the mean and median.
 ```{r message=FALSE}
 normd=rnorm(1000, mean=2)
 mean_norm=mean(normd)
@@ -130,8 +130,6 @@ gammad=rgamma(1000, shape=2)
 median_gamma=median(gammad)
 normd=as.data.frame(normd)
 gammad=as.data.frame(gammad)
-median_gamma
-
 library(ggplot2)
 ggplot(normd, aes(normd)) + 
   geom_density(fill = "blue", alpha = 0.25) + 
@@ -169,13 +167,13 @@ d3=rgamma(100,shape=2)
 kruskal.test(list(d1,d2,d3))
 ```
 
-#### OK, now double the shape parameter for d3 and test again
+##### OK, now double the shape parameter for d3 and test again
 ```{r}
 d3=rgamma(100,shape=4)
 kruskal.test(list(d1,d2,d3))
 ```
 
-#### Use pairwise.wilcox.test() to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
+##### Use pairwise.wilcox.test() to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 ```{r}
 d1=cbind(d1,rep(1,100))
 d2=cbind(d2,rep(2,100))
@@ -184,19 +182,19 @@ df=rbind(d1,d2,d3)
 colnames(df)=c("value","group")
 df=as.data.frame(df)
 df$group=as.factor(df$group)
-str(df)
 pairwise.wilcox.test(df$value,df$group, paired = TRUE)
 ```
 
-#### To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detecting the difference
+##### To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detecting the difference
 ```{r}
 d1=rgamma(100,shape=2)
 d2=rgamma(100,shape=2)
 d4=rgamma(100,shape=2.3)
 kruskal.test(list(d1,d2,d4))
 ```
-Since it is randomization, the p value changes a lot. Sometimes it is greater than 5%, sometimes it is less than 5%. Repeat it for 1000 times, and see the result. 
+Since it is randomization, the p value changes a lot. Sometimes it is greater than 5%, sometimes it is less than 5%. Let's repeat it for 1000 times, and see the result. 
 ```{r}
+# Define a function called pcal to calcualte the proportion of time you will see a significant p value. 
 pcal=function(percent){
 pvalues=vector()
 for (i in 1:1000){
