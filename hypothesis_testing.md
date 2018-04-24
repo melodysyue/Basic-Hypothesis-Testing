@@ -213,20 +213,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 47, p-value = 0.6173
+    ## s = 52, p-value = 0.7644
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.652047 2.239145
+    ##  1.798263 2.218633
     ## sample estimates:
     ## median of x 
-    ##    1.938595 
+    ##    2.019087 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431  1.653 2.2354
-    ## Interpolated CI       0.9500  1.652 2.2391
-    ## Upper Achieved CI     0.9648  1.650 2.2471
+    ## Lower Achieved CI     0.9431 1.8068 2.2085
+    ## Interpolated CI       0.9500 1.7983 2.2186
+    ## Upper Achieved CI     0.9648 1.7799 2.2404
 
 What about using one-sample t-test on this?
 
@@ -238,13 +238,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = -0.098859, df = 99, p-value = 0.9214
+    ## t = 0.27104, df = 99, p-value = 0.7869
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.792890 2.187451
+    ##  1.822794 2.233276
     ## sample estimates:
     ## mean of x 
-    ##  1.990171
+    ##  2.028035
 
 #### Wilconxon Signed-Rank Test
 
@@ -258,7 +258,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2503, p-value = 0.9411
+    ## V = 2668, p-value = 0.6242
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -273,13 +273,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -3.9579, df = 99, p-value = 0.0001424
+    ## t = -2.2829, df = 99, p-value = 0.02457
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8851404 -0.2939999
+    ##  -0.58220766 -0.04075727
     ## sample estimates:
     ##  mean of x 
-    ## -0.5895702
+    ## -0.3114825
 
 ``` r
 SIGN.test(dif,md=0)
@@ -289,20 +289,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 38, p-value = 0.02098
+    ## s = 45, p-value = 0.3682
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -1.0317611 -0.2551181
+    ##  -0.5907995  0.1280117
     ## sample estimates:
     ## median of x 
-    ##  -0.5836762 
+    ##  -0.1343717 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
-    ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -1.0173 -0.3039
-    ## Interpolated CI       0.9500 -1.0318 -0.2551
-    ## Upper Achieved CI     0.9648 -1.0628 -0.1504
+    ##                   Conf.Level  L.E.pt U.E.pt
+    ## Lower Achieved CI     0.9431 -0.5839 0.1152
+    ## Interpolated CI       0.9500 -0.5908 0.1280
+    ## Upper Achieved CI     0.9648 -0.6056 0.1555
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -312,7 +312,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1478, p-value = 0.0003204
+    ## V = 1933, p-value = 0.04197
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -330,7 +330,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 5035, p-value = 0.9328
+    ## W = 5628, p-value = 0.1252
     ## alternative hypothesis: true location shift is not equal to 0
 
 Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
@@ -362,7 +362,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 547020, p-value = 0.0002717
+    ## W = 538160, p-value = 0.003123
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -421,7 +421,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 0.35547, df = 2, p-value = 0.8372
+    ## Kruskal-Wallis chi-squared = 0.98153, df = 2, p-value = 0.6122
 
 OK, now double the shape parameter for d3 and test again
 
@@ -434,7 +434,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 77.811, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 66.769, df = 2, p-value = 3.172e-15
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -450,8 +450,8 @@ pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
     ## data:  combined.vector and grouping.vector 
     ## 
     ##    d1      d2     
-    ## d2 0.56    -      
-    ## d3 1.4e-11 1.4e-12
+    ## d2 0.61    -      
+    ## d3 2.0e-09 1.6e-10
     ## 
     ## P value adjustment method: holm
 
@@ -486,5 +486,3 @@ abline(v = mean(largest.shapes), col = "gray", lwd = 4)
 ```
 
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-22-1.png)
-
-Conclusion: the KW test will not tell the difference up to shape=2.45, which is pretty bad.
