@@ -213,20 +213,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 51, p-value = 0.9204
+    ## s = 47, p-value = 0.6173
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.860822 2.351369
+    ##  1.652047 2.239145
     ## sample estimates:
     ## median of x 
-    ##    2.127277 
+    ##    1.938595 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.8613 2.3462
-    ## Interpolated CI       0.9500 1.8608 2.3514
-    ## Upper Achieved CI     0.9648 1.8599 2.3625
+    ## Lower Achieved CI     0.9431  1.653 2.2354
+    ## Interpolated CI       0.9500  1.652 2.2391
+    ## Upper Achieved CI     0.9648  1.650 2.2471
 
 What about using one-sample t-test on this?
 
@@ -238,13 +238,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = -0.22406, df = 99, p-value = 0.8232
+    ## t = -0.098859, df = 99, p-value = 0.9214
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.756828 2.193825
+    ##  1.792890 2.187451
     ## sample estimates:
     ## mean of x 
-    ##  1.975327
+    ##  1.990171
 
 #### Wilconxon Signed-Rank Test
 
@@ -258,7 +258,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2553, p-value = 0.9247
+    ## V = 2503, p-value = 0.9411
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -273,13 +273,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -3.632, df = 99, p-value = 0.0004477
+    ## t = -3.9579, df = 99, p-value = 0.0001424
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8583433 -0.2518375
+    ##  -0.8851404 -0.2939999
     ## sample estimates:
     ##  mean of x 
-    ## -0.5550904
+    ## -0.5895702
 
 ``` r
 SIGN.test(dif,md=0)
@@ -289,20 +289,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 35, p-value = 0.003518
+    ## s = 38, p-value = 0.02098
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -1.1047907 -0.1620524
+    ##  -1.0317611 -0.2551181
     ## sample estimates:
     ## median of x 
-    ##  -0.5832376 
+    ##  -0.5836762 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -1.0970 -0.1798
-    ## Interpolated CI       0.9500 -1.1048 -0.1621
-    ## Upper Achieved CI     0.9648 -1.1216 -0.1239
+    ## Lower Achieved CI     0.9431 -1.0173 -0.3039
+    ## Interpolated CI       0.9500 -1.0318 -0.2551
+    ## Upper Achieved CI     0.9648 -1.0628 -0.1504
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -312,7 +312,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1505, p-value = 0.000456
+    ## V = 1478, p-value = 0.0003204
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -330,10 +330,10 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 5305, p-value = 0.4569
+    ## W = 5035, p-value = 0.9328
     ## alternative hypothesis: true location shift is not equal to 0
 
-Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the mean and median.
+Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
 
 ``` r
 normd=rnorm(1000, mean=2)
@@ -362,7 +362,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 541470, p-value = 0.00132
+    ## W = 547020, p-value = 0.0002717
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -421,7 +421,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 2.189, df = 2, p-value = 0.3347
+    ## Kruskal-Wallis chi-squared = 0.35547, df = 2, p-value = 0.8372
 
 OK, now double the shape parameter for d3 and test again
 
@@ -434,101 +434,57 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 73.238, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 77.811, df = 2, p-value < 2.2e-16
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
 ``` r
-d1=cbind(d1,rep(1,100))
-d2=cbind(d2,rep(2,100))
-d3=cbind(d3,rep(3,100))
-df=rbind(d1,d2,d3)
-colnames(df)=c("value","group")
-df=as.data.frame(df)
-df$group=as.factor(df$group)
-pairwise.wilcox.test(df$value,df$group, paired = TRUE)
+combined.vector=c(d1,d2,d3)
+grouping.vector=c(rep("d1",length(d1)),rep("d2",length(d2)),rep("d3",length(d3)))
+pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
 ```
 
     ## 
     ##  Pairwise comparisons using Wilcoxon signed rank test 
     ## 
-    ## data:  df$value and df$group 
+    ## data:  combined.vector and grouping.vector 
     ## 
-    ##   1       2      
-    ## 2 0.08    -      
-    ## 3 1.4e-11 3.3e-08
+    ##    d1      d2     
+    ## d2 0.56    -      
+    ## d3 1.4e-11 1.4e-12
     ## 
     ## P value adjustment method: holm
 
-To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detecting the difference
+To get a sense of the power of the KW test, try varying the shape parameter in increments of 1% up or down and find the threshold for detectiong the difference.
 
 ``` r
-d1=rgamma(100,shape=2)
-d2=rgamma(100,shape=2)
-d4=rgamma(100,shape=2.3)
-kruskal.test(list(d1,d2,d4))
+shape.param=seq(2,4,0.02)
+random.gamma=sapply(shape.param,function(x){rgamma(100,x)}, simplify=FALSE)
+pvalues=sapply(random.gamma, function(x){kruskal.test(list(d1,d2,x))$p.value})
+par(mfrow=c(1,1))
+plot(seq(from=2, to=4, by=0.02), pvalues)
+abline(h=0.05,col="red")
 ```
 
-    ## 
-    ##  Kruskal-Wallis rank sum test
-    ## 
-    ## data:  list(d1, d2, d4)
-    ## Kruskal-Wallis chi-squared = 1.4308, df = 2, p-value = 0.489
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
-Since it is randomization, the p value changes a lot. Sometimes it is greater than 5%, sometimes it is less than 5%. Let's repeat it for 1000 times, and see the result.
+Repeast this exercise 100 times.
 
 ``` r
-# Define a function called pcal to calcualte the proportion of time you will see a significant p value. 
-pcal=function(percent){
-pvalues=vector()
-for (i in 1:1000){
-  d1=rgamma(100,shape=2)
-  d2=rgamma(100,shape=2)
-  d4=rgamma(100,shape=2+2*percent)
-  test=kruskal.test(list(d1,d2,d4))
-  pvalues=c(pvalues,test$p.value)
+random.gamma = function(x) {
+shape.param = seq(2, 4, 0.02)
+random.gammas = sapply(shape.param, function(x) {rgamma(100, x)}, simplify = FALSE)
+pvalues = sapply(random.gammas, function(x) {kruskal.test(list(d1, d2, x))$p.value})
+largest.shape = max(which(pvalues > 0.05))
+return(2 + 0.02*largest.shape)
 }
-p=sum(pvalues<0.05)/1000*100
-print(paste("When the difference is within", percent*100, "%, "))
-print(paste("Out of 1000 tests, ", p,"% have significant p values."))
-}
+
+largest.shapes = sapply(1:100, random.gamma)
+
+plot(density(largest.shapes), col = "red")
+abline(v = mean(largest.shapes), col = "gray", lwd = 4)
 ```
 
-Try some percentage of differnence, and hopefully find the detection power.
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
-``` r
-pcal(1)
-```
-
-    ## [1] "When the difference is within 100 %, "
-    ## [1] "Out of 1000 tests,  100 % have significant p values."
-
-``` r
-pcal(0.5)
-```
-
-    ## [1] "When the difference is within 50 %, "
-    ## [1] "Out of 1000 tests,  100 % have significant p values."
-
-``` r
-pcal(0.4)
-```
-
-    ## [1] "When the difference is within 40 %, "
-    ## [1] "Out of 1000 tests,  98 % have significant p values."
-
-``` r
-pcal(0.3)
-```
-
-    ## [1] "When the difference is within 30 %, "
-    ## [1] "Out of 1000 tests,  87.4 % have significant p values."
-
-``` r
-pcal(0.2)
-```
-
-    ## [1] "When the difference is within 20 %, "
-    ## [1] "Out of 1000 tests,  57.3 % have significant p values."
-
-Conclusion, the power of Kruskal-Wallis test is about 30%, which means it cannot tell the difference within 30%, which is pretty bad...
+Conclusion: the KW test will not tell the difference up to shape=2.45, which is pretty bad.
