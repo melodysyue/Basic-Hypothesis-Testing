@@ -229,20 +229,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 49, p-value = 0.9204
+    ## s = 53, p-value = 0.6173
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.826532 2.254292
+    ##  1.807113 2.259526
     ## sample estimates:
     ## median of x 
-    ##    1.954697 
+    ##    2.081437 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.8305 2.2503
-    ## Interpolated CI       0.9500 1.8265 2.2543
-    ## Upper Achieved CI     0.9648 1.8181 2.2628
+    ## Lower Achieved CI     0.9431 1.8093 2.2454
+    ## Interpolated CI       0.9500 1.8071 2.2595
+    ## Upper Achieved CI     0.9648 1.8024 2.2900
 
 What about using one-sample t-test on this?
 
@@ -254,13 +254,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = 0.43267, df = 99, p-value = 0.6662
+    ## t = 1.0453, df = 99, p-value = 0.2984
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.876915 2.191733
+    ##  1.904462 2.308246
     ## sample estimates:
     ## mean of x 
-    ##  2.034324
+    ##  2.106354
 
 #### Wilconxon Signed-Rank Test
 
@@ -274,7 +274,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2710, p-value = 0.5258
+    ## V = 2796, p-value = 0.3523
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -289,13 +289,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -3.2434, df = 99, p-value = 0.001611
+    ## t = -4.0036, df = 99, p-value = 0.0001207
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.7260159 -0.1748721
+    ##  -0.8838244 -0.2980645
     ## sample estimates:
-    ## mean of x 
-    ## -0.450444
+    ##  mean of x 
+    ## -0.5909445
 
 ``` r
 SIGN.test(dif,md=0)
@@ -305,20 +305,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 36, p-value = 0.006637
+    ## s = 38, p-value = 0.02098
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.7963621 -0.1449141
+    ##  -1.0084734 -0.1347159
     ## sample estimates:
     ## median of x 
-    ##   -0.458496 
+    ##  -0.7669838 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -0.7930 -0.1718
-    ## Interpolated CI       0.9500 -0.7964 -0.1449
-    ## Upper Achieved CI     0.9648 -0.8035 -0.0871
+    ## Lower Achieved CI     0.9431 -1.0015 -0.1394
+    ## Interpolated CI       0.9500 -1.0085 -0.1347
+    ## Upper Achieved CI     0.9648 -1.0234 -0.1246
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -328,7 +328,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1612, p-value = 0.001704
+    ## V = 1440, p-value = 0.0001923
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -346,7 +346,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 5454, p-value = 0.2678
+    ## W = 5567, p-value = 0.1663
     ## alternative hypothesis: true location shift is not equal to 0
 
 Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
@@ -378,7 +378,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 535160, p-value = 0.006474
+    ## W = 544190, p-value = 0.0006217
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -437,7 +437,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 1.9165, df = 2, p-value = 0.3836
+    ## Kruskal-Wallis chi-squared = 2.0815, df = 2, p-value = 0.3532
 
 OK, now double the shape parameter for d3 and test again
 
@@ -450,7 +450,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 78.929, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 96.901, df = 2, p-value < 2.2e-16
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -466,8 +466,8 @@ pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
     ## data:  combined.vector and grouping.vector 
     ## 
     ##    d1      d2     
-    ## d2 0.9     -      
-    ## d3 2.2e-10 1.5e-10
+    ## d2 0.18    -      
+    ## d3 3.7e-13 3.4e-15
     ## 
     ## P value adjustment method: holm
 
@@ -519,7 +519,7 @@ alt.y = rnorm(300, mean=carrier/2)
 ## Note that rnorm() will take a vector of means - the random value returned for the ith element will be drawn from a normal distribution with the ith mean.  Here, the first 100 values will be drawn from a normal with a mean of zero whereas the next 200 will be drawn from a normal with a mean of 0.5, note carrier/2.
 ```
 
-Just for the sake of comparison, deploy the appropriate parametric test for the difference in means. You can use the "~" operator. y~x is interpreted as "y is modeled as a function of x"
+Just for the sake of comparison, deploy the appropriate parametric test for the difference in means.
 
 ``` r
 t.test(null.y~carrier, var.equal=TRUE)
@@ -529,13 +529,13 @@ t.test(null.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  null.y by carrier
-    ## t = 2.3528, df = 298, p-value = 0.01928
+    ## t = 0.78312, df = 298, p-value = 0.4342
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  0.04649735 0.52203548
+    ##  -0.1375898  0.3194718
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      0.26225897     -0.02200744
+    ##      0.10551389      0.01457289
 
 ``` r
 t.test(alt.y~carrier, var.equal=TRUE)
@@ -545,13 +545,13 @@ t.test(alt.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  alt.y by carrier
-    ## t = -3.7291, df = 298, p-value = 0.00023
+    ## t = -4.1452, df = 298, p-value = 4.431e-05
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.7377143 -0.2280508
+    ##  -0.8077091 -0.2876679
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      0.07955588      0.56243842
+    ##       0.0315445       0.5792330
 
 Now, define test statistics for randomization tests for the null and alternate distributions
 
@@ -588,14 +588,14 @@ abline(v=alt.diff, lwd=2, col="red")
 mean(abs(null.rand) > abs(null.diff))
 ```
 
-    ## [1] 0.021
+    ## [1] 0.466
 
 ``` r
 #take absolute values, since you can do .rand-.diff, or .diff-.rand. 
 mean(abs(alt.rand) > abs(alt.diff))
 ```
 
-    ## [1] 0.001
+    ## [1] 0
 
 Results of t-tests and randomization tests are very comparable, which is expected. Since the data is sampled from a normal distribution with equal variance and the sample size is very big. Both assumptions of t.test are met. Rampling is nearly as powerful as parametric tests.
 
@@ -619,13 +619,13 @@ variance = sumsqr* (1/(length(sp.means)-1))
 variance
 ```
 
-    ## [1] 0.003804643
+    ## [1] 0.004120182
 
 ``` r
 var(sp.means)
 ```
 
-    ## [1] 0.003804643
+    ## [1] 0.004120182
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And compare this to the percentile method for 95% CIs we learned during lecture (97.5% and 2.5%).
 
@@ -667,13 +667,13 @@ variance = sumsqr* (1/(length(sp.means.skewed)-1))
 variance
 ```
 
-    ## [1] 2.9738
+    ## [1] 9.314156
 
 ``` r
 var(sp.means.skewed)
 ```
 
-    ## [1] 2.9738
+    ## [1] 9.314156
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And then compare this to the percentile method for 95% CIs we learned during lecture.
 

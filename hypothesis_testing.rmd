@@ -221,7 +221,7 @@ alt.y = rnorm(300, mean=carrier/2)
 ## Note that rnorm() will take a vector of means - the random value returned for the ith element will be drawn from a normal distribution with the ith mean.  Here, the first 100 values will be drawn from a normal with a mean of zero whereas the next 200 will be drawn from a normal with a mean of 0.5, note carrier/2.
 ```
 
-Just for the sake of comparison, deploy the appropriate parametric test for the difference in means.  You can use the "~" operator.  y~x is interpreted as "y is modeled as a function of x"
+Just for the sake of comparison, deploy the appropriate parametric test for the difference in means.
 ```{r}
 t.test(null.y~carrier, var.equal=TRUE)
 t.test(alt.y~carrier, var.equal=TRUE)
