@@ -204,3 +204,127 @@ largest.shapes = sapply(1:100, random.gamma)
 plot(density(largest.shapes), col = "red")
 abline(v = mean(largest.shapes), col = "gray", lwd = 4)
 ```
+
+## Resampling
+There are two categories of resampling, randomization and bootstrapping. Randomization is sampling without replacement, it is for hypothesis testing. Bootstrapping is sampling with replacement, it is for parameter estimation. Resampling and non-parametric testing methods discussed above are both good for the situations when we know little about the distribution and the assumptions are violated. 
+
+##### Sample Randomization Test
+
+Let's examine the difference in mean outcome in a dominant model for a single SNP. First, we make up some "true" data. Here, the carrier vector is binary and specifies whether each subject either is or is not a carrier of the SNP.  The null.y and alt.y vectors give the outcome (let's say it's the expression of an associated transcript) for each subject.
+```{r}
+carrier = rep(c(0,1), c(100,200))
+null.y = rnorm(300) #by default, mean=0, sd=1.
+alt.y = rnorm(300, mean=carrier/2)
+## Note that rnorm() will take a vector of means - the random value returned for the ith element will be drawn from a normal distribution with the ith mean.  Here, the first 100 values will be drawn from a normal with a mean of zero whereas the next 200 will be drawn from a normal with a mean of 0.5, note carrier/2.
+```
+
+Just for the sake of comparison, deploy the appropriate parametric test for the difference in means.  You can use the "~" operator.  y~x is interpreted as "y is modeled as a function of x"
+```{r}
+t.test(null.y~carrier, var.equal=TRUE)
+t.test(alt.y~carrier, var.equal=TRUE)
+```
+
+Now, define test statistics for randomization tests for the null and alternate distributions 
+```{r}
+null.diff = mean(null.y[carrier==1])-mean(null.y[carrier==0])
+alt.diff = mean(alt.y[carrier==1])-mean(alt.y[carrier==0])
+
+```
+
+Generate 1000 random test statistics from the data.  
+```{r}
+random.test = function(x,y) {
+sp = sample(x, replace=FALSE) # By default, it is without replacement. 
+mean(y[sp==1])-mean(y[sp==0])
+}
+
+null.rand = replicate(1000, random.test(carrier, null.y))
+alt.rand = replicate(1000, random.test(carrier, alt.y))
+```
+
+Plot your results and compare p-values for each distribution.
+```{r}
+par(mfrow = c(1,2))
+hist(null.rand, xlim=c(-0.6,0.6))
+abline(v=null.diff, lwd=2, col="red")
+hist(alt.rand, xlim=c(-0.6,0.6))
+abline(v=alt.diff, lwd=2, col="red")
+
+mean(abs(null.rand) > abs(null.diff))
+#take absolute values, since you can do .rand-.diff, or .diff-.rand. 
+mean(abs(alt.rand) > abs(alt.diff))
+
+```
+
+Results of t-tests and randomization tests are very comparable, which is expected. Since the data is sampled from a normal distribution with equal variance and the sample size is very big. Both assumptions of t.test are met. Rampling is nearly as powerful as parametric tests. 
+
+##### Bootstrapping
+
+The bootstrap can be used to obtain the variance of a test statistic. Let's say we wish to set a 95% CI on the mean of our alternate hypothesis distribution (alt.y) from above.  First, create a boostrapped distribution of the mean.
+```{r}
+bp.mean = function (x) {
+sp = sample(x, replace = TRUE)
+mean(sp)
+}
+sp.means = replicate(1000, bp.mean(alt.y))
+```
+
+Next, find the variance of the boostrapped values without using the var() function. Compare your results to var().
+```{r}
+sumsqr = sum((sp.means-mean(sp.means))^2)
+variance = sumsqr* (1/(length(sp.means)-1))
+variance
+var(sp.means)
+```
+
+Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And compare this to the percentile method for 95% CIs we learned during lecture (97.5% and 2.5%). 
+```{r}
+CI_upper = mean(alt.y) + 1.96*sqrt(variance)
+CI_lower = mean(alt.y) - 1.96*sqrt(variance)
+CI_upper_percentile = sort(sp.means)[975]
+CI_lower_percentile = sort(sp.means)[25]
+
+par(mfrow = c(1,1))
+hist(sp.means, col = "gray", breaks = 20)
+abline(v = CI_upper, col = "red")
+abline(v = CI_lower, col = "red")
+abline(v = CI_upper_percentile, col = "blue")
+abline(v = CI_lower_percentile, col = "blue")
+```
+
+Pretty close, as you can see.  
+
+Now let's repeat on a skewed distribution. First, we make up some skewed data.
+```{r}
+skewed.data = rexp(15, 0.1)
+```
+
+Next, we create a boostrapped distribution of the mean.
+```{r}
+sp.means.skewed = replicate(1000, bp.mean(skewed.data))
+```
+
+Next, find the variance of the boostrapped values without using the var() function.  Compare your results to var().
+```{r}
+sumsqr = sum((sp.means.skewed-mean(sp.means.skewed))^2)
+variance = sumsqr* (1/(length(sp.means.skewed)-1))
+variance
+var(sp.means.skewed)
+```
+
+Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And then compare this to the percentile method for 95% CIs we learned during lecture.
+```{r}
+CI_upper = mean(skewed.data) + 1.96*sqrt(variance)
+CI_lower = mean(skewed.data) - 1.96*sqrt(variance)
+CI_upper_percentile = sort(sp.means.skewed)[975]
+CI_lower_percentile = sort(sp.means.skewed)[25]
+
+par(mfrow=c(1,1))
+hist(sp.means.skewed, col = "gray", breaks = 20)
+abline(v = CI_upper, col = "red")
+abline(v = CI_lower, col = "red")
+abline(v = CI_upper_percentile, col = "blue")
+abline(v = CI_lower_percentile, col = "blue")
+```
+
+As you can see, the two methods produce very different results on a skewed distribution.  The percentile method is preferred in this case.
