@@ -1,7 +1,7 @@
 ---
 title: "Basic Hypothesis Testing"
 author: "Yue Shi, PhD candidate, University of Washington,"
-date: "4/21/2018"
+date: "4/24/2018"
 output: rmarkdown::github_document
 ---
 
