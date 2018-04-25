@@ -2,7 +2,10 @@
 title: "Basic Hypothesis Testing"
 author: "Yue Shi, PhD candidate, University of Washington,"
 date: "4/24/2018"
-output: rmarkdown::github_document
+output:
+  github_document:
+    toc: true
+    toc_depth: 5
 ---
 
 ## Import packages and data sets
