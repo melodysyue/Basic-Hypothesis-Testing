@@ -18,6 +18,11 @@ Yue Shi, PhD candidate, University of Washington,
 -   [Resampling](#resampling)
     -   [Sample Randomization Test](#sample-randomization-test)
     -   [Bootstrapping](#bootstrapping)
+-   [Power Analysis](#power-analysis)
+    -   [Power/sample size curve.](#powersample-size-curve.)
+    -   [Power/alpha curve](#poweralpha-curve)
+    -   [Power/effect size curve.](#powereffect-size-curve.)
+    -   [Compare the power between WRST and t test.](#compare-the-power-between-wrst-and-t-test.)
 
 Import packages and data sets
 -----------------------------
@@ -232,17 +237,17 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ## s = 53, p-value = 0.6173
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.807113 2.259526
+    ##  1.812045 2.190836
     ## sample estimates:
     ## median of x 
-    ##    2.081437 
+    ##     2.03404 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.8093 2.2454
-    ## Interpolated CI       0.9500 1.8071 2.2595
-    ## Upper Achieved CI     0.9648 1.8024 2.2900
+    ## Lower Achieved CI     0.9431 1.8170 2.1813
+    ## Interpolated CI       0.9500 1.8120 2.1908
+    ## Upper Achieved CI     0.9648 1.8015 2.2113
 
 What about using one-sample t-test on this?
 
@@ -254,13 +259,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = 1.0453, df = 99, p-value = 0.2984
+    ## t = 0.42706, df = 99, p-value = 0.6703
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.904462 2.308246
+    ##  1.851658 2.229711
     ## sample estimates:
     ## mean of x 
-    ##  2.106354
+    ##  2.040684
 
 #### Wilconxon Signed-Rank Test
 
@@ -274,7 +279,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2796, p-value = 0.3523
+    ## V = 2620, p-value = 0.7452
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -289,13 +294,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -4.0036, df = 99, p-value = 0.0001207
+    ## t = -2.7223, df = 99, p-value = 0.007662
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8838244 -0.2980645
+    ##  -0.59206162 -0.09284935
     ## sample estimates:
     ##  mean of x 
-    ## -0.5909445
+    ## -0.3424555
 
 ``` r
 SIGN.test(dif,md=0)
@@ -305,20 +310,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 38, p-value = 0.02098
+    ## s = 37, p-value = 0.01203
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -1.0084734 -0.1347159
+    ##  -0.67364596 -0.04957585
     ## sample estimates:
     ## median of x 
-    ##  -0.7669838 
+    ##  -0.3075771 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -1.0015 -0.1394
-    ## Interpolated CI       0.9500 -1.0085 -0.1347
-    ## Upper Achieved CI     0.9648 -1.0234 -0.1246
+    ## Lower Achieved CI     0.9431 -0.6675 -0.0512
+    ## Interpolated CI       0.9500 -0.6736 -0.0496
+    ## Upper Achieved CI     0.9648 -0.6869 -0.0460
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -328,7 +333,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1440, p-value = 0.0001923
+    ## V = 1719, p-value = 0.005613
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -346,7 +351,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 5567, p-value = 0.1663
+    ## W = 5109, p-value = 0.7909
     ## alternative hypothesis: true location shift is not equal to 0
 
 Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
@@ -378,7 +383,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 544190, p-value = 0.0006217
+    ## W = 545030, p-value = 0.000488
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -437,7 +442,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 2.0815, df = 2, p-value = 0.3532
+    ## Kruskal-Wallis chi-squared = 0.79914, df = 2, p-value = 0.6706
 
 OK, now double the shape parameter for d3 and test again
 
@@ -450,7 +455,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 96.901, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 97.307, df = 2, p-value < 2.2e-16
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -466,8 +471,8 @@ pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
     ## data:  combined.vector and grouping.vector 
     ## 
     ##    d1      d2     
-    ## d2 0.18    -      
-    ## d3 3.7e-13 3.4e-15
+    ## d2 0.87    -      
+    ## d3 5.6e-12 6.3e-13
     ## 
     ## P value adjustment method: holm
 
@@ -529,13 +534,13 @@ t.test(null.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  null.y by carrier
-    ## t = 0.78312, df = 298, p-value = 0.4342
+    ## t = 0.90653, df = 298, p-value = 0.3654
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.1375898  0.3194718
+    ##  -0.1229771  0.3330380
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      0.10551389      0.01457289
+    ##      0.05346832     -0.05156211
 
 ``` r
 t.test(alt.y~carrier, var.equal=TRUE)
@@ -545,13 +550,13 @@ t.test(alt.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  alt.y by carrier
-    ## t = -4.1452, df = 298, p-value = 4.431e-05
+    ## t = -5.7077, df = 298, p-value = 2.765e-08
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8077091 -0.2876679
+    ##  -0.9250065 -0.4506831
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##       0.0315445       0.5792330
+    ##      -0.1228006       0.5650443
 
 Now, define test statistics for randomization tests for the null and alternate distributions
 
@@ -588,7 +593,7 @@ abline(v=alt.diff, lwd=2, col="red")
 mean(abs(null.rand) > abs(null.diff))
 ```
 
-    ## [1] 0.466
+    ## [1] 0.365
 
 ``` r
 #take absolute values, since you can do .rand-.diff, or .diff-.rand. 
@@ -619,13 +624,13 @@ variance = sumsqr* (1/(length(sp.means)-1))
 variance
 ```
 
-    ## [1] 0.004120182
+    ## [1] 0.003573636
 
 ``` r
 var(sp.means)
 ```
 
-    ## [1] 0.004120182
+    ## [1] 0.003573636
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And compare this to the percentile method for 95% CIs we learned during lecture (97.5% and 2.5%).
 
@@ -667,13 +672,13 @@ variance = sumsqr* (1/(length(sp.means.skewed)-1))
 variance
 ```
 
-    ## [1] 9.314156
+    ## [1] 6.265727
 
 ``` r
 var(sp.means.skewed)
 ```
 
-    ## [1] 9.314156
+    ## [1] 6.265727
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And then compare this to the percentile method for 95% CIs we learned during lecture.
 
@@ -694,3 +699,97 @@ abline(v = CI_lower_percentile, col = "blue")
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-34-1.png)
 
 As you can see, the two methods produce very different results on a skewed distribution. The percentile method is preferred in this case.
+
+Power Analysis
+--------------
+
+Power of a statistical test is the probability of rejecting the null when the alternative is true, also called as true positive rate. It is common to aim for a power = 0.8 or greater, e. g. an 80% of chance you will correctly reject the null hypothesis. To do a power analysis, you need variability *σ*<sup>2</sup>, and effect size *Δ*. Simply put, power analysis will tell you what effect size you can actually detect given the test you intend to perform.
+
+First, let's get the "pwr" package. Pwr contains power functions for most parametric tests.
+
+``` r
+library(pwr)
+```
+
+Use pwr.t.test to find the power of a two sided, two-sample t-test assuming an effect size of 0.5 (50% increase/decrease), an alpha of 0.05 and an n of 5.
+
+``` r
+pwr.t.test(n = 5, d = 0.5, sig.level = 0.05, type = "two.sample", alternative = "two.sided") #d is Effect Size. 
+```
+
+    ## 
+    ##      Two-sample t test power calculation 
+    ## 
+    ##               n = 5
+    ##               d = 0.5
+    ##       sig.level = 0.05
+    ##           power = 0.107686
+    ##     alternative = two.sided
+    ## 
+    ## NOTE: n is number in *each* group
+
+It tells us only 11% of chance you will correctly reject the null hypothesis given this study design.
+
+##### Power/sample size curve.
+
+``` r
+sizes=pwr.t.test(n=seq(5,200,25),d=0.5,sig.level=0.05,type="two.sample",alternative="two.sided")
+df.size=data.frame("size"=seq(5,200,25),"power"=sizes$power)
+ggplot(df.size,aes(x=size,y=power))+
+  geom_line(col="red")+
+  theme_classic()
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-37-1.png)
+
+##### Power/alpha curve
+
+``` r
+alphas=pwr.t.test(n=5,d=0.5,sig.level=seq(0,1,0.001),type="two.sample",alternative="two.sided")
+df.alpha=data.frame("alpha"=seq(0,1,0.001),"power"=alphas$power)
+ggplot(df.alpha,aes(x=alpha,y=power))+
+  geom_line(col="red")+
+  theme_classic()
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-38-1.png)
+
+##### Power/effect size curve.
+
+``` r
+effects=pwr.t.test(n=5,d=seq(0,4,0.01),sig.level=0.05,type="two.sample",alternative="two.sided")
+df.effect=data.frame("effect.size"=seq(0,4,0.01),"power"=effects$power)
+ggplot(df.effect,aes(x=effect.size,y=power))+
+  geom_line(col="red")+
+  theme_classic()
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-39-1.png)
+
+##### Compare the power between WRST and t test.
+
+Next, use an empirical approach to derive the power of the Wilcoxon Rank Sum for data from two random normal distributions, one with a mean of 0 and another with a mean of 1. Try sample sizes ranging from 5 to 50 and use a critical value of 0.05. Repeat 1,000 times for each sample size and measure power.
+
+``` r
+two.wilcox = function(x) {
+wilcox.test(rnorm(x), rnorm(x, mean = 1))$p.value <= 0.05
+}
+powers.wilcox = sapply(seq(5, 50, 5), function(x) {sum(replicate(1000, two.wilcox(x)))/1000})
+
+two.ttest = function(x) {
+t.test(rnorm(x), rnorm(x, mean = 1))$p.value <= 0.05
+}
+
+powers.ttest = sapply(seq(5, 50, 5), function(x) {sum(replicate(1000, two.ttest(x)))/1000})
+
+df=data.frame("size"=seq(5,50,5),"WRST"=powers.wilcox,"ttest"=powers.ttest)
+
+ggplot(df,aes(x=size,y=ttest))+
+  geom_line(col="red",lwd=1)+
+  geom_line(aes(y=WRST),col="blue",lwd=1)+
+  theme_classic()
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-40-1.png)
+
+Conclusion: WRST is nearly as powerful as the t-test, even when the assumptions of the t-test are met.

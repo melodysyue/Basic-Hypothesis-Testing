@@ -331,3 +331,69 @@ abline(v = CI_lower_percentile, col = "blue")
 ```
 
 As you can see, the two methods produce very different results on a skewed distribution.  The percentile method is preferred in this case.
+
+## Power Analysis
+Power of a statistical test is the probability of rejecting the null when the alternative is true, also called as true positive rate. It is common to aim for a power = 0.8 or greater, e. g. an 80% of chance you will correctly reject the null hypothesis. To do a power analysis, you need variability $\sigma^2$, and effect size $\Delta$. Simply put, power analysis will tell you what effect size you can actually detect given the test you intend to perform. 
+
+First, let's get the "pwr" package.  Pwr contains power functions for most parametric tests.
+```{r}
+library(pwr)
+```
+
+Use pwr.t.test to find the power of a two sided, two-sample t-test assuming an effect size of 0.5 (50% increase/decrease), an alpha of 0.05 and an n of 5.
+```{r}
+pwr.t.test(n = 5, d = 0.5, sig.level = 0.05, type = "two.sample", alternative = "two.sided") #d is Effect Size. 
+```
+It tells us only 11% of chance you will correctly reject the null hypothesis given this study design. 
+
+##### Power/sample size curve. 
+```{r}
+sizes=pwr.t.test(n=seq(5,200,25),d=0.5,sig.level=0.05,type="two.sample",alternative="two.sided")
+df.size=data.frame("size"=seq(5,200,25),"power"=sizes$power)
+ggplot(df.size,aes(x=size,y=power))+
+  geom_line(col="red")+
+  theme_classic()
+```
+
+##### Power/alpha curve
+```{r}
+alphas=pwr.t.test(n=5,d=0.5,sig.level=seq(0,1,0.001),type="two.sample",alternative="two.sided")
+df.alpha=data.frame("alpha"=seq(0,1,0.001),"power"=alphas$power)
+ggplot(df.alpha,aes(x=alpha,y=power))+
+  geom_line(col="red")+
+  theme_classic()
+```
+
+##### Power/effect size curve.
+```{r}
+effects=pwr.t.test(n=5,d=seq(0,4,0.01),sig.level=0.05,type="two.sample",alternative="two.sided")
+df.effect=data.frame("effect.size"=seq(0,4,0.01),"power"=effects$power)
+ggplot(df.effect,aes(x=effect.size,y=power))+
+  geom_line(col="red")+
+  theme_classic()
+```
+
+##### Compare the power between WRST and t test. 
+Next, use an empirical approach to derive the power of the Wilcoxon Rank Sum for data from two random normal distributions, one with a mean of 0 and another with a mean of 1. Try sample sizes ranging from 5 to 50 and use a critical value of 0.05.  Repeat 1,000 times for each sample size and measure power.
+```{r}
+two.wilcox = function(x) {
+wilcox.test(rnorm(x), rnorm(x, mean = 1))$p.value <= 0.05
+}
+powers.wilcox = sapply(seq(5, 50, 5), function(x) {sum(replicate(1000, two.wilcox(x)))/1000})
+
+two.ttest = function(x) {
+t.test(rnorm(x), rnorm(x, mean = 1))$p.value <= 0.05
+}
+
+powers.ttest = sapply(seq(5, 50, 5), function(x) {sum(replicate(1000, two.ttest(x)))/1000})
+
+df=data.frame("size"=seq(5,50,5),"WRST"=powers.wilcox,"ttest"=powers.ttest)
+
+ggplot(df,aes(x=size,y=ttest))+
+  geom_line(col="red",lwd=1)+
+  geom_line(aes(y=WRST),col="blue",lwd=1)+
+  theme_classic()
+```
+
+Conclusion: WRST is nearly as powerful as the t-test, even when the assumptions of the t-test are met.
+
