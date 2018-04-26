@@ -9,4 +9,5 @@
 * compare multiple means: anova vs. Kruskal-Wallis test
 * compare proportions between two groups
 * calcualte 95% CI for the sample mean using bootstrapping
+* power analysis
 * basic R functions to conduct hypothesis testing
