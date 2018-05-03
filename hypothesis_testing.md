@@ -234,20 +234,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 53, p-value = 0.6173
+    ## s = 39, p-value = 0.0352
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.812045 2.190836
+    ##  1.515685 1.943490
     ## sample estimates:
     ## median of x 
-    ##     2.03404 
+    ##     1.63675 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.8170 2.1813
-    ## Interpolated CI       0.9500 1.8120 2.1908
-    ## Upper Achieved CI     0.9648 1.8015 2.2113
+    ## Lower Achieved CI     0.9431 1.5161 1.9192
+    ## Interpolated CI       0.9500 1.5157 1.9435
+    ## Upper Achieved CI     0.9648 1.5147 1.9956
 
 What about using one-sample t-test on this?
 
@@ -259,13 +259,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = 0.42706, df = 99, p-value = 0.6703
+    ## t = -2.7561, df = 99, p-value = 0.006964
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.851658 2.229711
+    ##  1.592996 1.933726
     ## sample estimates:
     ## mean of x 
-    ##  2.040684
+    ##  1.763361
 
 #### Wilconxon Signed-Rank Test
 
@@ -279,7 +279,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2620, p-value = 0.7452
+    ## V = 1706, p-value = 0.004889
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -294,13 +294,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -2.7223, df = 99, p-value = 0.007662
+    ## t = -7.3671, df = 99, p-value = 5.297e-11
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.59206162 -0.09284935
+    ##  -1.0546838 -0.6071082
     ## sample estimates:
-    ##  mean of x 
-    ## -0.3424555
+    ## mean of x 
+    ## -0.830896
 
 ``` r
 SIGN.test(dif,md=0)
@@ -310,20 +310,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 37, p-value = 0.01203
+    ## s = 26, p-value = 1.667e-06
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.67364596 -0.04957585
+    ##  -1.0941165 -0.5347102
     ## sample estimates:
     ## median of x 
-    ##  -0.3075771 
+    ##  -0.8334513 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -0.6675 -0.0512
-    ## Interpolated CI       0.9500 -0.6736 -0.0496
-    ## Upper Achieved CI     0.9648 -0.6869 -0.0460
+    ## Lower Achieved CI     0.9431 -1.0935 -0.5349
+    ## Interpolated CI       0.9500 -1.0941 -0.5347
+    ## Upper Achieved CI     0.9648 -1.0954 -0.5344
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -333,7 +333,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1719, p-value = 0.005613
+    ## V = 759, p-value = 1.276e-09
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -351,7 +351,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 5109, p-value = 0.7909
+    ## W = 4131, p-value = 0.03383
     ## alternative hypothesis: true location shift is not equal to 0
 
 Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
@@ -383,7 +383,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 545030, p-value = 0.000488
+    ## W = 537800, p-value = 0.003419
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -442,7 +442,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 0.79914, df = 2, p-value = 0.6706
+    ## Kruskal-Wallis chi-squared = 0.6058, df = 2, p-value = 0.7387
 
 OK, now double the shape parameter for d3 and test again
 
@@ -455,7 +455,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 97.307, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 66.139, df = 2, p-value = 4.346e-15
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -471,8 +471,8 @@ pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
     ## data:  combined.vector and grouping.vector 
     ## 
     ##    d1      d2     
-    ## d2 0.87    -      
-    ## d3 5.6e-12 6.3e-13
+    ## d2 0.88    -      
+    ## d3 6.4e-10 1.9e-09
     ## 
     ## P value adjustment method: holm
 
@@ -534,13 +534,13 @@ t.test(null.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  null.y by carrier
-    ## t = 0.90653, df = 298, p-value = 0.3654
+    ## t = 0.43989, df = 298, p-value = 0.6603
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.1229771  0.3330380
+    ##  -0.1998328  0.3148847
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      0.05346832     -0.05156211
+    ##      0.15604088      0.09851495
 
 ``` r
 t.test(alt.y~carrier, var.equal=TRUE)
@@ -550,13 +550,13 @@ t.test(alt.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  alt.y by carrier
-    ## t = -5.7077, df = 298, p-value = 2.765e-08
+    ## t = -5.0931, df = 298, p-value = 6.259e-07
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.9250065 -0.4506831
+    ##  -0.8683081 -0.3843022
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      -0.1228006       0.5650443
+    ##      -0.1439066       0.4823986
 
 Now, define test statistics for randomization tests for the null and alternate distributions
 
@@ -593,7 +593,7 @@ abline(v=alt.diff, lwd=2, col="red")
 mean(abs(null.rand) > abs(null.diff))
 ```
 
-    ## [1] 0.365
+    ## [1] 0.655
 
 ``` r
 #take absolute values, since you can do .rand-.diff, or .diff-.rand. 
@@ -606,7 +606,7 @@ Results of t-tests and randomization tests are very comparable, which is expecte
 
 ##### Bootstrapping
 
-The bootstrap can be used to obtain the variance of a test statistic. Let's say we wish to set a 95% CI on the mean of our alternate hypothesis distribution (alt.y) from above. First, create a boostrapped distribution of the mean.
+The bootstrap can be used to obtain the variance of a test statistic. For example, obtain 1000 bootstrap samples from the data, for each bootstrap sample, calculate the mean, use sampling distribution to compute the sample mean and variance. According to the central limit theorem (CLT), the distribution of the sample means will be approximately normal distributed, and the mean of all samples from the sample population will be approximately equal to the mean of the population. Let's say we wish to set a 95% CI on the mean of our alternate hypothesis distribution (alt.y) from above. First, create a boostrapped distribution of the mean.
 
 ``` r
 bp.mean = function (x) {
@@ -624,13 +624,13 @@ variance = sumsqr* (1/(length(sp.means)-1))
 variance
 ```
 
-    ## [1] 0.003573636
+    ## [1] 0.003815229
 
 ``` r
 var(sp.means)
 ```
 
-    ## [1] 0.003573636
+    ## [1] 0.003815229
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And compare this to the percentile method for 95% CIs we learned during lecture (97.5% and 2.5%).
 
@@ -672,13 +672,13 @@ variance = sumsqr* (1/(length(sp.means.skewed)-1))
 variance
 ```
 
-    ## [1] 6.265727
+    ## [1] 11.05672
 
 ``` r
 var(sp.means.skewed)
 ```
 
-    ## [1] 6.265727
+    ## [1] 11.05672
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And then compare this to the percentile method for 95% CIs we learned during lecture.
 

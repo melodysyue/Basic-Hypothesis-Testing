@@ -263,7 +263,7 @@ Results of t-tests and randomization tests are very comparable, which is expecte
 
 ##### Bootstrapping
 
-The bootstrap can be used to obtain the variance of a test statistic. Let's say we wish to set a 95% CI on the mean of our alternate hypothesis distribution (alt.y) from above.  First, create a boostrapped distribution of the mean.
+The bootstrap can be used to obtain the variance of a test statistic. For example, obtain 1000 bootstrap samples from the data, for each bootstrap sample, calculate the mean, use sampling distribution to compute the sample mean and variance. According to the central limit theorem (CLT), the distribution of the sample means will be approximately normal distributed, and the mean of all samples from the sample population will be approximately equal to the mean of the population. Let's say we wish to set a 95% CI on the mean of our alternate hypothesis distribution (alt.y) from above.  First, create a boostrapped distribution of the mean.
 ```{r}
 bp.mean = function (x) {
 sp = sample(x, replace = TRUE)
