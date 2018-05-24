@@ -23,6 +23,11 @@ Yue Shi, PhD candidate, University of Washington,
     -   [Power/alpha curve](#poweralpha-curve)
     -   [Power/effect size curve.](#powereffect-size-curve.)
     -   [Compare the power between WRST and t test.](#compare-the-power-between-wrst-and-t-test.)
+-   [Analysis of Variance (ANOVA)](#analysis-of-variance-anova)
+    -   [One-Way Anova](#one-way-anova)
+        -   [Example 1](#example-1)
+        -   [Example 2](#example-2)
+        -   [Two-way ANOVA](#two-way-anova)
 
 Import packages and data sets
 -----------------------------
@@ -234,20 +239,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 39, p-value = 0.0352
+    ## s = 49, p-value = 0.9204
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.515685 1.943490
+    ##  1.671673 2.242171
     ## sample estimates:
     ## median of x 
-    ##     1.63675 
+    ##    1.954115 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.5161 1.9192
-    ## Interpolated CI       0.9500 1.5157 1.9435
-    ## Upper Achieved CI     0.9648 1.5147 1.9956
+    ## Lower Achieved CI     0.9431 1.6759 2.2335
+    ## Interpolated CI       0.9500 1.6717 2.2422
+    ## Upper Achieved CI     0.9648 1.6626 2.2609
 
 What about using one-sample t-test on this?
 
@@ -259,13 +264,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = -2.7561, df = 99, p-value = 0.006964
+    ## t = -0.17711, df = 99, p-value = 0.8598
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.592996 1.933726
+    ##  1.759666 2.200945
     ## sample estimates:
     ## mean of x 
-    ##  1.763361
+    ##  1.980305
 
 #### Wilconxon Signed-Rank Test
 
@@ -279,7 +284,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 1706, p-value = 0.004889
+    ## V = 2499, p-value = 0.9301
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -294,13 +299,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -7.3671, df = 99, p-value = 5.297e-11
+    ## t = -4.646, df = 99, p-value = 1.044e-05
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -1.0546838 -0.6071082
+    ##  -0.9906136 -0.3976958
     ## sample estimates:
-    ## mean of x 
-    ## -0.830896
+    ##  mean of x 
+    ## -0.6941547
 
 ``` r
 SIGN.test(dif,md=0)
@@ -310,20 +315,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 26, p-value = 1.667e-06
+    ## s = 30, p-value = 7.85e-05
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -1.0941165 -0.5347102
+    ##  -0.9620190 -0.2889678
     ## sample estimates:
     ## median of x 
-    ##  -0.8334513 
+    ##  -0.6323255 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -1.0935 -0.5349
-    ## Interpolated CI       0.9500 -1.0941 -0.5347
-    ## Upper Achieved CI     0.9648 -1.0954 -0.5344
+    ## Lower Achieved CI     0.9431 -0.9616 -0.3053
+    ## Interpolated CI       0.9500 -0.9620 -0.2890
+    ## Upper Achieved CI     0.9648 -0.9628 -0.2539
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -333,7 +338,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 759, p-value = 1.276e-09
+    ## V = 1306, p-value = 2.794e-05
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -351,7 +356,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 4131, p-value = 0.03383
+    ## W = 4503, p-value = 0.2251
     ## alternative hypothesis: true location shift is not equal to 0
 
 Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
@@ -383,7 +388,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 537800, p-value = 0.003419
+    ## W = 533470, p-value = 0.009536
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -442,7 +447,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 0.6058, df = 2, p-value = 0.7387
+    ## Kruskal-Wallis chi-squared = 1.522, df = 2, p-value = 0.4672
 
 OK, now double the shape parameter for d3 and test again
 
@@ -455,7 +460,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 66.139, df = 2, p-value = 4.346e-15
+    ## Kruskal-Wallis chi-squared = 72.913, df = 2, p-value < 2.2e-16
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -471,8 +476,8 @@ pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
     ## data:  combined.vector and grouping.vector 
     ## 
     ##    d1      d2     
-    ## d2 0.88    -      
-    ## d3 6.4e-10 1.9e-09
+    ## d2 0.49    -      
+    ## d3 1.1e-09 1.7e-10
     ## 
     ## P value adjustment method: holm
 
@@ -534,13 +539,13 @@ t.test(null.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  null.y by carrier
-    ## t = 0.43989, df = 298, p-value = 0.6603
+    ## t = -0.15764, df = 298, p-value = 0.8748
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.1998328  0.3148847
+    ##  -0.2591422  0.2207039
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      0.15604088      0.09851495
+    ##     -0.04492388     -0.02570474
 
 ``` r
 t.test(alt.y~carrier, var.equal=TRUE)
@@ -550,13 +555,13 @@ t.test(alt.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  alt.y by carrier
-    ## t = -5.0931, df = 298, p-value = 6.259e-07
+    ## t = -3.1959, df = 298, p-value = 0.001544
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.8683081 -0.3843022
+    ##  -0.6265318 -0.1489855
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##      -0.1439066       0.4823986
+    ##       0.1261251       0.5138837
 
 Now, define test statistics for randomization tests for the null and alternate distributions
 
@@ -593,7 +598,7 @@ abline(v=alt.diff, lwd=2, col="red")
 mean(abs(null.rand) > abs(null.diff))
 ```
 
-    ## [1] 0.655
+    ## [1] 0.865
 
 ``` r
 #take absolute values, since you can do .rand-.diff, or .diff-.rand. 
@@ -624,13 +629,13 @@ variance = sumsqr* (1/(length(sp.means)-1))
 variance
 ```
 
-    ## [1] 0.003815229
+    ## [1] 0.003341659
 
 ``` r
 var(sp.means)
 ```
 
-    ## [1] 0.003815229
+    ## [1] 0.003341659
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And compare this to the percentile method for 95% CIs we learned during lecture (97.5% and 2.5%).
 
@@ -672,13 +677,13 @@ variance = sumsqr* (1/(length(sp.means.skewed)-1))
 variance
 ```
 
-    ## [1] 11.05672
+    ## [1] 13.90658
 
 ``` r
 var(sp.means.skewed)
 ```
 
-    ## [1] 11.05672
+    ## [1] 13.90658
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And then compare this to the percentile method for 95% CIs we learned during lecture.
 
@@ -793,3 +798,133 @@ ggplot(df,aes(x=size,y=ttest))+
 ![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-40-1.png)
 
 Conclusion: WRST is nearly as powerful as the t-test, even when the assumptions of the t-test are met.
+
+Analysis of Variance (ANOVA)
+----------------------------
+
+ANOVA is a collection of statistical models used to analyze the differences between group means. It is about partitioning total variation.
+
+Total variation: SST (sum of squared deviations about the grand mean across all N observations)
+$$
+SST=\\sum\_{i=1}^{K}\\sum\_{j=1}^{J}(x\_{ij}-\\bar{x})^2
+$$
+ Between group variation: *S**S**T*<sub>*G*</sub>(sum of squared deviations for each group mean about the grand mean)
+
+$$
+SST\_G=\\sum\_{i=1}^{K}n\_i\\cdot(\\bar{x\_i}-\\bar{x})^2  
+$$
+$$
+MST\_G=\\frac{\\sum\_{i=1}^{K}n\_i\\cdot(\\bar{x\_i}-\\bar{x})^2}{K-1}  
+$$
+
+Within group variation (also called ERROR): *S**S**T*<sub>*E*</sub> (sum of squared deviations for all observations within each group from that group mean, summed across all groups)
+
+$$
+SST\_E=\\sum\_{i=1}^{K}\\sum\_{j=1}^{J}(x\_{ij}-\\bar{x\_i})^2
+$$
+$$
+MST\_E=\\frac{\\sum\_{i=1}^{K}\\sum\_{j=1}^{J}(x\_{ij}-\\bar{x\_i})^2}{N-K}
+$$
+ Total variation can be partitioned into between-group variation and within-group variation.
+*S**S**T* = *S**S**T*<sub>*G*</sub> + *S**S**T*<sub>*E*</sub>
+
+The F-test: F statistic has an F-distribution under the null hypothesis. You cannot use the ratio between *S**S**T*<sub>*G*</sub> and *S**S**T*<sub>*E*</sub>, since *S**S**T*<sub>*G*</sub> tends to be smaller than *S**S**T*<sub>*E*</sub>. So we need to standardize these two terms by the degrees of freedom.
+$$
+F=\\frac{MST\_G}{MST\_E}
+$$
+
+### One-Way Anova
+
+#### Example 1
+
+``` r
+ff <- read.table(file="http://www.cs.washington.edu/homes/suinlee/genome560/data/example_ANOVA.txt")  
+head(ff)
+```
+
+    ##   grp        x
+    ## 1   1 29.11601
+    ## 2   1 29.00317
+    ## 3   1 28.75443
+    ## 4   1 29.00025
+    ## 5   1 28.56627
+    ## 6   1 28.84333
+
+``` r
+mm <- lm(x ~ factor(grp), data=ff) 
+anova(mm) 
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: x
+    ##             Df Sum Sq Mean Sq F value    Pr(>F)    
+    ## factor(grp)  3 43.774 14.5912  215.33 < 2.2e-16 ***
+    ## Residuals   36  2.439  0.0678                      
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+mm ## it gives you the means of different groups. Use the first group as the reference, and means for other groups will be plus/minus the coefficients from the "intercept".
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = x ~ factor(grp), data = ff)
+    ## 
+    ## Coefficients:
+    ##  (Intercept)  factor(grp)2  factor(grp)3  factor(grp)4  
+    ##      28.8418        2.0495        1.7954       -0.3022
+
+#### Example 2
+
+These are (real) measurements of adductor muscle scar length on shells of mussels collected at a number of localities. A one-way ANOVA tests whether those localities differ. The numerical value of variable V1 is to be used as a "factor", so that it simply indicates group membership and is not a numerical value of interest.
+
+``` r
+gg <- read.table(file="http://www.cs.washington.edu/homes/suinlee/genome560/data/mussels.txt") 
+head(gg)
+```
+
+    ##          V1     V2
+    ## 1 Tillamook 0.0571
+    ## 2 Tillamook 0.0813
+    ## 3 Tillamook 0.0831
+    ## 4 Tillamook 0.0976
+    ## 5 Tillamook 0.0817
+    ## 6 Tillamook 0.0859
+
+``` r
+str(gg)
+```
+
+    ## 'data.frame':    39 obs. of  2 variables:
+    ##  $ V1: Factor w/ 5 levels "Magadan","Newport",..: 4 4 4 4 4 4 4 4 4 4 ...
+    ##  $ V2: num  0.0571 0.0813 0.0831 0.0976 0.0817 0.0859 0.0735 0.0659 0.0923 0.0836 ...
+
+``` r
+m2=lm(V2~V1, data=gg)
+anova(m2)
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: V2
+    ##           Df    Sum Sq    Mean Sq F value    Pr(>F)    
+    ## V1         4 0.0045197 0.00112992   7.121 0.0002812 ***
+    ## Residuals 34 0.0053949 0.00015867                      
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+``` r
+m2
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = V2 ~ V1, data = gg)
+    ## 
+    ## Coefficients:
+    ##  (Intercept)     V1Newport  V1Petersburg   V1Tillamook   V1Tvarminne  
+    ##     0.078012     -0.003213      0.025430      0.002187      0.017687
+
+#### Two-way ANOVA
