@@ -27,7 +27,13 @@ Yue Shi, PhD candidate, University of Washington,
     -   [One-Way Anova](#one-way-anova)
         -   [Example 1](#example-1)
         -   [Example 2](#example-2)
-        -   [Two-way ANOVA](#two-way-anova)
+    -   [Two-way ANOVA](#two-way-anova)
+        -   [Example 1](#example-1-1)
+        -   [Example 2](#example-2-1)
+-   [Multiple hypotheses testing](#multiple-hypotheses-testing)
+    -   [Family-wise error rate (FWER)](#family-wise-error-rate-fwer)
+    -   [B-H False discovery rate (FDR)](#b-h-false-discovery-rate-fdr)
+    -   [Example: gene expression differences between European and African populations.](#example-gene-expression-differences-between-european-and-african-populations.)
 
 Import packages and data sets
 -----------------------------
@@ -239,20 +245,20 @@ SIGN.test(x, md = 2) # it use median (md) instead of mean (mu).
     ##  One-sample Sign-Test
     ## 
     ## data:  x
-    ## s = 49, p-value = 0.9204
+    ## s = 55, p-value = 0.3682
     ## alternative hypothesis: true median is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.671673 2.242171
+    ##  1.956654 2.297322
     ## sample estimates:
     ## median of x 
-    ##    1.954115 
+    ##    2.123881 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level L.E.pt U.E.pt
-    ## Lower Achieved CI     0.9431 1.6759 2.2335
-    ## Interpolated CI       0.9500 1.6717 2.2422
-    ## Upper Achieved CI     0.9648 1.6626 2.2609
+    ## Lower Achieved CI     0.9431 1.9597 2.2970
+    ## Interpolated CI       0.9500 1.9567 2.2973
+    ## Upper Achieved CI     0.9648 1.9500 2.2981
 
 What about using one-sample t-test on this?
 
@@ -264,13 +270,13 @@ t.test(x,mu=2)
     ##  One Sample t-test
     ## 
     ## data:  x
-    ## t = -0.17711, df = 99, p-value = 0.8598
+    ## t = 0.25453, df = 99, p-value = 0.7996
     ## alternative hypothesis: true mean is not equal to 2
     ## 95 percent confidence interval:
-    ##  1.759666 2.200945
+    ##  1.822595 2.229615
     ## sample estimates:
     ## mean of x 
-    ##  1.980305
+    ##  2.026105
 
 #### Wilconxon Signed-Rank Test
 
@@ -284,7 +290,7 @@ wilcox.test(x, mu = 2) #it use mean (mu) instead of median (md)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  x
-    ## V = 2499, p-value = 0.9301
+    ## V = 2698, p-value = 0.5531
     ## alternative hypothesis: true location is not equal to 2
 
 Now, you try with paired data. First, generate some random data from the normal distribution, calculate the difference and do the appropriate test.
@@ -299,13 +305,13 @@ t.test(dif,mu=0)
     ##  One Sample t-test
     ## 
     ## data:  dif
-    ## t = -4.646, df = 99, p-value = 1.044e-05
+    ## t = -4.5135, df = 99, p-value = 1.759e-05
     ## alternative hypothesis: true mean is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.9906136 -0.3976958
+    ##  -0.9546931 -0.3716247
     ## sample estimates:
     ##  mean of x 
-    ## -0.6941547
+    ## -0.6631589
 
 ``` r
 SIGN.test(dif,md=0)
@@ -315,20 +321,20 @@ SIGN.test(dif,md=0)
     ##  One-sample Sign-Test
     ## 
     ## data:  dif
-    ## s = 30, p-value = 7.85e-05
+    ## s = 36, p-value = 0.006637
     ## alternative hypothesis: true median is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.9620190 -0.2889678
+    ##  -1.30823004 -0.07847351
     ## sample estimates:
     ## median of x 
-    ##  -0.6323255 
+    ##  -0.6878422 
     ## 
     ## Achieved and Interpolated Confidence Intervals: 
     ## 
     ##                   Conf.Level  L.E.pt  U.E.pt
-    ## Lower Achieved CI     0.9431 -0.9616 -0.3053
-    ## Interpolated CI       0.9500 -0.9620 -0.2890
-    ## Upper Achieved CI     0.9648 -0.9628 -0.2539
+    ## Lower Achieved CI     0.9431 -1.3035 -0.0892
+    ## Interpolated CI       0.9500 -1.3082 -0.0785
+    ## Upper Achieved CI     0.9648 -1.3184 -0.0555
 
 ``` r
 wilcox.test(dif,mu=0)
@@ -338,7 +344,7 @@ wilcox.test(dif,mu=0)
     ##  Wilcoxon signed rank test with continuity correction
     ## 
     ## data:  dif
-    ## V = 1306, p-value = 2.794e-05
+    ## V = 1351, p-value = 5.463e-05
     ## alternative hypothesis: true location is not equal to 0
 
 **Wilcoxon signed-rank test is more powerful than the simply sign test.** Using the rank data in addition to the sign data gave us much better precision, since it has smaller p value.
@@ -356,7 +362,7 @@ wilcox.test(x,z)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  x and z
-    ## W = 4503, p-value = 0.2251
+    ## W = 5190, p-value = 0.6433
     ## alternative hypothesis: true location shift is not equal to 0
 
 Now make random normal data set of 1000 elements with a mean of 2 and a random gamma data set whose shape parameter is 2 (will also have an expected value of 2). Make density plot of each, marking the means.
@@ -388,7 +394,7 @@ wilcox.test(normd$normd,gammad$gammad)
     ##  Wilcoxon rank sum test with continuity correction
     ## 
     ## data:  normd$normd and gammad$gammad
-    ## W = 533470, p-value = 0.009536
+    ## W = 550160, p-value = 0.0001026
     ## alternative hypothesis: true location shift is not equal to 0
 
 Next, do a WRST on the WW domain reported\_effect scores vs the Pab1 reported\_effect scores, and compare the results with t test.
@@ -447,7 +453,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 1.522, df = 2, p-value = 0.4672
+    ## Kruskal-Wallis chi-squared = 0.27693, df = 2, p-value = 0.8707
 
 OK, now double the shape parameter for d3 and test again
 
@@ -460,7 +466,7 @@ kruskal.test(list(d1,d2,d3))
     ##  Kruskal-Wallis rank sum test
     ## 
     ## data:  list(d1, d2, d3)
-    ## Kruskal-Wallis chi-squared = 72.913, df = 2, p-value < 2.2e-16
+    ## Kruskal-Wallis chi-squared = 88.239, df = 2, p-value < 2.2e-16
 
 Use **pairwise.wilcox.test()** to see which of our three data sets is different from the others (note the automatic correction for multiple hypothesis testing). It requires some formatting work.
 
@@ -476,8 +482,8 @@ pairwise.wilcox.test(combined.vector,grouping.vector, paired = TRUE)
     ## data:  combined.vector and grouping.vector 
     ## 
     ##    d1      d2     
-    ## d2 0.49    -      
-    ## d3 1.1e-09 1.7e-10
+    ## d2 0.46    -      
+    ## d3 2.3e-12 2.9e-13
     ## 
     ## P value adjustment method: holm
 
@@ -539,13 +545,13 @@ t.test(null.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  null.y by carrier
-    ## t = -0.15764, df = 298, p-value = 0.8748
+    ## t = -2.2358, df = 298, p-value = 0.02611
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.2591422  0.2207039
+    ##  -0.51065849 -0.03253247
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##     -0.04492388     -0.02570474
+    ##     -0.20381539      0.06778009
 
 ``` r
 t.test(alt.y~carrier, var.equal=TRUE)
@@ -555,13 +561,13 @@ t.test(alt.y~carrier, var.equal=TRUE)
     ##  Two Sample t-test
     ## 
     ## data:  alt.y by carrier
-    ## t = -3.1959, df = 298, p-value = 0.001544
+    ## t = -3.5099, df = 298, p-value = 0.0005176
     ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
-    ##  -0.6265318 -0.1489855
+    ##  -0.6916571 -0.1946891
     ## sample estimates:
     ## mean in group 0 mean in group 1 
-    ##       0.1261251       0.5138837
+    ##      0.05300897      0.49618209
 
 Now, define test statistics for randomization tests for the null and alternate distributions
 
@@ -598,7 +604,7 @@ abline(v=alt.diff, lwd=2, col="red")
 mean(abs(null.rand) > abs(null.diff))
 ```
 
-    ## [1] 0.865
+    ## [1] 0.02
 
 ``` r
 #take absolute values, since you can do .rand-.diff, or .diff-.rand. 
@@ -629,13 +635,13 @@ variance = sumsqr* (1/(length(sp.means)-1))
 variance
 ```
 
-    ## [1] 0.003341659
+    ## [1] 0.003401459
 
 ``` r
 var(sp.means)
 ```
 
-    ## [1] 0.003341659
+    ## [1] 0.003401459
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And compare this to the percentile method for 95% CIs we learned during lecture (97.5% and 2.5%).
 
@@ -677,13 +683,13 @@ variance = sumsqr* (1/(length(sp.means.skewed)-1))
 variance
 ```
 
-    ## [1] 13.90658
+    ## [1] 7.891829
 
 ``` r
 var(sp.means.skewed)
 ```
 
-    ## [1] 13.90658
+    ## [1] 7.891829
 
 Now, calculate 95% CIs for the sample mean using this value and make a histogram showing where they fall. And then compare this to the percentile method for 95% CIs we learned during lecture.
 
@@ -835,6 +841,8 @@ $$
 
 ### One-Way Anova
 
+The term one-way, also called one-factor, indicates that there is a single explanatory variable "treatment" with two or more levels, and only one lefvel of treatment is applied at any time for a given subject.
+
 #### Example 1
 
 ``` r
@@ -927,4 +935,191 @@ m2
     ##  (Intercept)     V1Newport  V1Petersburg   V1Tillamook   V1Tvarminne  
     ##     0.078012     -0.003213      0.025430      0.002187      0.017687
 
-#### Two-way ANOVA
+### Two-way ANOVA
+
+#### Example 1
+
+Suppose we have two capsule types (C or V) and two digestive fluids (Gastric or Duodenal). We randomly assign 5 capsules of each type to each type of digesetive juice and observe dissolve time. We are going to do a two-way analysis of variance where there the “rows” might be the type of digestive juice and the “columns” capsule type (so a 2 x 2 table) with 5 data points in each cell.
+
+``` r
+gg <- read.table(file="http://www.cs.washington.edu/homes/suinlee/genome560/data/dissolve.txt") 
+m1 <- lm(V4 ~ V2*V3, data=gg)
+anova(m1) ## when there is an interaction, we don't trust the rest of the table. It means both main effects have impacts. 
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: V4
+    ##           Df Sum Sq Mean Sq F value   Pr(>F)   
+    ## V2         1 151.25  151.25  5.0232 0.039542 * 
+    ## V3         1   0.20    0.20  0.0066 0.936055   
+    ## V2:V3      1 320.00  320.00 10.6277 0.004916 **
+    ## Residuals 16 481.76   30.11                    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#### Example 2
+
+Mannose phosphate isomerase enzyme had its enzyme activity measured in some fish of three genotypes and two sexes, in multiple fish of the same species. (The genotypes ff, fs, and ss refer to the two alleles at the locus, which in old-fashioned protein electrophoresis were the “fast” and “slow” alleles which refers to where they move on the gel and not to enzyme activity). We are going to do a two-way analysis of variance where there the “rows” might be the sexes and the “columns” genotypes (so a 2 x 3 table) with multiple data points in each cell.
+
+``` r
+hh <- read.table(file="http://www.cs.washington.edu/homes/suinlee/genome560/data/mpi.txt")      
+m2 <- lm(V4 ~ V2*V3, data=hh)
+anova(m2) ## When there is no interaction, then we  can trust the rest of the table. The values will be similar as the one-way ANOVA results. 
+```
+
+    ## Analysis of Variance Table
+    ## 
+    ## Response: V4
+    ##           Df  Sum Sq Mean Sq F value Pr(>F)
+    ## V2         1  0.0681 0.06808  0.0861 0.7712
+    ## V3         2  0.2772 0.13862  0.1754 0.8400
+    ## V2:V3      2  0.8146 0.40732  0.5153 0.6025
+    ## Residuals 30 23.7138 0.79046
+
+Conclusion: When check for two-way ANOVA table, you always check for the interaction term first, then look at the individual main effects.
+
+Multiple hypotheses testing
+---------------------------
+
+P(Making an false positive error in 1 test)= *α*
+P(Not making a false positive error in 1 test)=1 − *α*
+P(Not making an false positive error in m tests)=(1 − *α*)<sup>*m*</sup> P(Making at least 1 false positive error in m tests)=1 − (1 − *α*)<sup>*m*</sup>
+
+``` r
+m=seq(1,200,1)
+p=1-(1-0.05)^m
+plot(p~m)
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-45-1.png)
+
+When m is large, you will for sure make at least one false positve error! So what can we do to avoid this? Ajust p value!
+
+### Family-wise error rate (FWER)
+
+Family referes to the collection of the hypotheses. FWER will try to minimize P(making at least one false positive among all tests).
+
+*Single Step (equivalent adjustment to all tests): Bonferroni*
+
+The probability of making even one false positive error in the family is controlled at the level of alpha. Bonferroni method rejects hypotheses when $p&lt;\\frac{\\alpha}{m}$. This is adjusted p value and it is very stringent. However, it often leaves very few hypothesies that are deemed significant.
+
+*Sequential adjustment: Holm's method*
+
+It orders the unadjusted p values first such that p1&lt;p2&lt;...pm. We do not mulitply every p by the same factor m.
+
+### B-H False discovery rate (FDR)
+
+When you are not worried about making ONE mistake, and you just want to lower the false discovery rate.
+
+False rejection/total rejection
+
+### Example: gene expression differences between European and African populations.
+
+``` r
+a <- read.table(header = T, file="http://www.cs.washington.edu/homes/suinlee/genome560/RMA_Filtered.txt")
+dim(a)
+```
+
+    ## [1] 5194   33
+
+``` r
+b=a[,2:33]
+dim(b)
+```
+
+    ## [1] 5194   32
+
+``` r
+fun=function(d){
+  return(t.test(d[1:16], d[17:32])$p.value)
+}
+p=apply(b,1,fun) ##apply the function for each row
+head(p)
+```
+
+    ## [1] 0.002156265 0.883625427 0.972905815 0.607205923 0.368235513 0.484618218
+
+``` r
+hist(p, breaks=40)
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-46-1.png)
+
+``` r
+tabulate(as.numeric(p<0.05)) #count
+```
+
+    ## [1] 705
+
+``` r
+tabulate(as.numeric(p<0.01))
+```
+
+    ## [1] 258
+
+``` r
+length(p)*0.05
+```
+
+    ## [1] 259.7
+
+``` r
+length(p)*0.01
+```
+
+    ## [1] 51.94
+
+``` r
+p_bon=p.adjust(p,"bonferroni")
+p_hol=p.adjust(p,"holm")
+p_bh=p.adjust(p,"BH")
+alpha=0.05
+tabulate(as.numeric(p_bon<alpha))
+```
+
+    ## [1] 2
+
+``` r
+which(p_bon<alpha)
+```
+
+    ## [1] 2186 2670
+
+``` r
+tabulate(as.numeric(p_hol<alpha))
+```
+
+    ## [1] 2
+
+``` r
+which(p_hol<alpha)
+```
+
+    ## [1] 2186 2670
+
+``` r
+tabulate(as.numeric(p_bh<alpha))
+```
+
+    ## [1] 36
+
+``` r
+which(p_bh<alpha)
+```
+
+    ##  [1]   17  371  418  602  828  865  926 1216 1232 1454 1465 1700 1833 1998
+    ## [15] 2035 2186 2325 2363 2644 2670 2798 2861 3340 3420 3465 3587 3599 3779
+    ## [29] 4125 4134 4212 4237 4274 4661 5026 5190
+
+You can see BH-FDR is more leninet than Bonferroni and Holm methods. Now let's compare the distribution of p value before and after adjustment.
+
+``` r
+par(mfrow=c(2,2))
+hist(p,breaks=40)
+hist(p_bon, breaks=40)
+hist(p_hol, breaks=40)
+hist(p_bh, breaks=40)
+```
+
+![](hypothesis_testing_files/figure-markdown_github/unnamed-chunk-47-1.png)
